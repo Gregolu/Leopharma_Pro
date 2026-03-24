@@ -1,0 +1,140 @@
+<div class="settings-container">
+  
+  <div class="page-navigation">
+    <a routerLink="/dashboard" class="back-link"><i class="fas fa-arrow-left"></i> Retour au tableau de bord</a>
+    <div class="page-tabs">
+      <a routerLink="/profile" class="tab-link">Mon Profil</a>
+      <a routerLink="/settings" class="tab-link active">Paramètres</a>
+    </div>
+  </div>
+
+  <div class="page-header">
+    <h1 class="page-title">Paramètres de l'application</h1>
+    <p class="page-subtitle">Gérez vos modèles de communication et vos préférences de notifications institutionnelles.</p>
+  </div>
+
+  <div class="settings-card">
+    <!-- Tabs Header -->
+    <div class="tabs-header">
+      <button 
+        class="tab-btn" 
+        [class.active]="activeTab === 'templates'"
+        (click)="setTab('templates')">
+        <i class="fas fa-file-alt"></i> Modèles (Templates)
+      </button>
+      <button 
+        class="tab-btn" 
+        [class.active]="activeTab === 'notifications'"
+        (click)="setTab('notifications')">
+        <i class="fas fa-bell"></i> Notifications
+      </button>
+    </div>
+
+    <div class="tabs-content">
+      
+      <!-- Tab: Templates -->
+      <div class="tab-pane" *ngIf="activeTab === 'templates'">
+        <div class="pane-header">
+          <h2>Modèles de communication</h2>
+          <button class="btn-primary-outline"><i class="fas fa-plus"></i> Nouveau Modèle</button>
+        </div>
+        
+        <div class="templates-table mt-16">
+          <div class="st-header">
+            <div class="th-name">Nom du modèle</div>
+            <div class="th-date">Dernière modification</div>
+            <div class="th-action">Actions</div>
+          </div>
+          
+          <div class="st-row" *ngFor="let item of templates">
+            <div class="td-name">{{ item.name }}</div>
+            <div class="td-date">{{ item.lastModified }}</div>
+            <div class="td-action">
+              <button class="action-btn" (click)="editTemplate(item)"><i class="fas fa-edit"></i></button>
+              <button class="action-btn text-error"><i class="fas fa-trash"></i></button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+      <!-- Tab: Notifications -->
+      <div class="tab-pane" *ngIf="activeTab === 'notifications'">
+        <div class="pane-header">
+          <h2>Préférences de notifications</h2>
+        </div>
+        
+        <div class="notifications-layout mt-16">
+          
+          <!-- Email Block -->
+          <div class="notif-block">
+            <h3><i class="fas fa-envelope"></i> Par Email</h3>
+            
+            <label class="toggle-row">
+              <div class="toggle-text">Nouveau patient assigné</div>
+              <div class="toggle-switch">
+                <input type="checkbox" [(ngModel)]="notifications.email.newPatient" />
+                <span class="slider"></span>
+              </div>
+            </label>
+            
+            <label class="toggle-row">
+              <div class="toggle-text">Mise à jour d'un dossier</div>
+              <div class="toggle-switch">
+                <input type="checkbox" [(ngModel)]="notifications.email.dataUpdate" />
+                <span class="slider"></span>
+              </div>
+            </label>
+            
+            <label class="toggle-row">
+              <div class="toggle-text">Nouveau message reçu</div>
+              <div class="toggle-switch">
+                <input type="checkbox" [(ngModel)]="notifications.email.messageReceived" />
+                <span class="slider"></span>
+              </div>
+            </label>
+            
+          </div>
+
+          <!-- In-App Block -->
+          <div class="notif-block">
+            <h3><i class="fas fa-mobile-alt"></i> Dans l'application</h3>
+            
+            <label class="toggle-row">
+              <div class="toggle-text">Nouveau patient assigné</div>
+              <div class="toggle-switch">
+                <input type="checkbox" [(ngModel)]="notifications.inApp.newPatient" />
+                <span class="slider"></span>
+              </div>
+            </label>
+            
+            <label class="toggle-row">
+              <div class="toggle-text">Mise à jour d'un dossier</div>
+              <div class="toggle-switch">
+                <input type="checkbox" [(ngModel)]="notifications.inApp.dataUpdate" />
+                <span class="slider"></span>
+              </div>
+            </label>
+            
+            <label class="toggle-row">
+              <div class="toggle-text">Nouveau message reçu</div>
+              <div class="toggle-switch">
+                <input type="checkbox" [(ngModel)]="notifications.inApp.messageReceived" />
+                <span class="slider"></span>
+              </div>
+            </label>
+          </div>
+          
+        </div>
+        
+        <div class="action-row mt-32 right">
+          <button class="btn-primary" [disabled]="isSaving" (click)="saveSettings()">
+            <span *ngIf="!isSaving">Enregistrer les préférences</span>
+            <span *ngIf="isSaving"><i class="fas fa-spinner fa-spin"></i> Enregistrement...</span>
+          </button>
+        </div>
+      </div>
+      
+    </div>
+  </div>
+</div>

@@ -1,0 +1,222 @@
+// Variables principales
+$success: #10b981;
+$primary: #204131;
+$text-dark: #1e293b;
+$text-light: #64748b;
+
+.patient-network {
+  background: white;
+  border-radius: 12px;
+  padding: 24px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+
+  .header {
+    margin-bottom: 24px;
+    h3 {
+      margin: 0;
+      color: $text-dark;
+      font-size: 1.25rem;
+    }
+  }
+
+  .category-header {
+    background-color: $text-dark;
+    color: white;
+    padding: 12px;
+    text-align: center;
+    font-weight: 600;
+    font-size: 1.1rem;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  }
+}
+
+.pro-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 16px;
+  margin-bottom: 40px;
+}
+
+.pro-card {
+  border: 1px solid #e2e8f0;
+  background: white;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  transition: all 0.2s;
+  height: 200px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.02);
+
+  &:hover {
+    box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+    transform: translateY(-2px);
+  }
+
+  &.sent-border {
+    border: 1px solid $success;
+  }
+
+  .pro-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 20px 16px 10px;
+
+    .pro-icon {
+      position: relative;
+      font-size: 2.8rem;
+      color: $text-dark;
+      margin-bottom: 16px;
+
+      &.sent-text {
+        color: $success;
+      }
+
+      .plus-badge {
+        position: absolute;
+        top: -5px;
+        right: -10px;
+        background: $success;
+        color: white;
+        border-radius: 50%;
+        width: 18px;
+        height: 18px;
+        font-size: 0.6rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+    }
+
+    .profession {
+      margin: 0;
+      color: $text-dark;
+      font-size: 1rem;
+      font-weight: 500;
+      text-align: center;
+
+      &.sent-text {
+        color: $success;
+      }
+    }
+
+    .date {
+      margin: 6px 0 0 0;
+      color: $text-light;
+      font-size: 0.75rem;
+      text-align: center;
+    }
+  }
+
+  .pro-action {
+    border-top: 1px solid #e2e8f0;
+    padding: 12px;
+    display: flex;
+    justify-content: center;
+
+    .icon-btn {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: $text-dark;
+      color: white;
+      border: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: all 0.2s;
+
+      &:hover {
+        background: lighten($text-dark, 10%);
+        transform: scale(1.05);
+      }
+
+      &.btn-sent {
+        background: $success;
+        cursor: default;
+
+        &:hover {
+          transform: none;
+        }
+      }
+    }
+  }
+}
+
+/* Modal styles - Conservation des anciens styles de modale */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0,0,0,0.5);
+  backdrop-filter: blur(2px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background: white;
+  border-radius: 16px;
+  width: 100%;
+  max-width: 500px;
+  padding: 24px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+
+  .modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    border-bottom: 1px solid #e2e8f0;
+    padding-bottom: 16px;
+    
+    h3 { margin: 0; font-size: 1.25rem; color: #0f172a; }
+    
+    .close-btn {
+      background: none;
+      border: none;
+      font-size: 1.2rem;
+      cursor: pointer;
+      color: #64748b;
+      padding: 4px;
+      border-radius: 4px;
+      &:hover { background: #f1f5f9; color: #0f172a; }
+    }
+  }
+
+  .modal-body {
+    p { margin-top: 0; margin-bottom: 16px; color: #334155; font-size: 1rem; line-height: 1.5; }
+    
+    .modal-profession {
+      color: $text-dark;
+      font-size: 1.1rem;
+      font-weight: 700;
+    }
+
+    .form-group {
+      display: flex; flex-direction: column; gap: 8px;
+      label { font-weight: 600; font-size: 0.95rem; color: #0f172a; }
+      textarea {
+        width: 100%; border: 1px solid #cbd5e1; border-radius: 8px;
+        padding: 12px; font-family: inherit; font-size: 0.95rem; resize: vertical; outline: none;
+        &:focus { border-color: $primary; box-shadow: 0 0 0 2px rgba($primary, 0.1); }
+      }
+    }
+  }
+
+  .modal-footer {
+    display: flex; justify-content: flex-end; gap: 12px; margin-top: 24px;
+    button { padding: 10px 20px; border-radius: 8px; font-weight: 600; font-size: 0.95rem; cursor: pointer; }
+    .btn-cancel { background: white; border: 1px solid #cbd5e1; color: #475569; &:hover { background: #f8fafc; } }
+    .btn-send { background: $primary; border: none; color: white; &:hover { filter: brightness(0.9); } }
+  }
+}

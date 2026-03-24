@@ -1,0 +1,213 @@
+.discussion-container {
+  display: flex;
+  flex-direction: column;
+  height: calc(100vh - 250px); /* Fill most of the container */
+  max-height: 800px;
+  background-color: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  border: 1px solid #e2e8f0;
+  overflow: hidden;
+  margin-top: 24px;
+}
+
+.chat-header {
+  padding: 16px 24px;
+  border-bottom: 1px solid #e2e8f0;
+  background-color: #f8fafc;
+  display: flex;
+  align-items: center;
+
+  .patient-info {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+
+    .avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background-color: #1a2332;
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 600;
+      font-size: 16px;
+    }
+
+    .details {
+      h3 {
+        margin: 0;
+        font-size: 16px;
+        color: #0f172a;
+      }
+      .status {
+        font-size: 12px;
+        color: #10b981;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+
+        &::before {
+          content: "";
+          display: inline-block;
+          width: 8px;
+          height: 8px;
+          border-radius: 50%;
+          background-color: #10b981;
+        }
+      }
+    }
+  }
+}
+
+.chat-messages {
+  flex: 1;
+  padding: 24px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  background-color: #f1f5f9;
+
+  .message-wrapper {
+    display: flex;
+    width: 100%;
+
+    &.patient {
+      justify-content: flex-start;
+
+      .message-bubble {
+        background-color: white;
+        border: 1px solid #e2e8f0;
+        border-bottom-left-radius: 4px;
+        color: #334155;
+      }
+    }
+
+    &.professional {
+      justify-content: flex-end;
+
+      .message-bubble {
+        background-color: #1a2332; /* Primary dark color */
+        color: white;
+        border-bottom-right-radius: 4px;
+        
+        .message-meta {
+          color: rgba(255, 255, 255, 0.7);
+        }
+
+        .voice-message svg {
+          stroke: white;
+        }
+      }
+    }
+  }
+
+  .message-bubble {
+    max-width: 70%;
+    padding: 12px 16px;
+    border-radius: 12px;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+
+    .message-content {
+      font-size: 15px;
+      line-height: 1.5;
+      
+      &.voice-message {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        font-style: italic;
+        
+        svg {
+          width: 24px;
+          height: 24px;
+        }
+      }
+    }
+
+    .message-meta {
+      font-size: 11px;
+      color: #64748b;
+      margin-top: 6px;
+      text-align: right;
+    }
+  }
+}
+
+.chat-input-area {
+  padding: 16px 24px;
+  background-color: white;
+  border-top: 1px solid #e2e8f0;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+
+  .icon-btn {
+    background: none;
+    border: none;
+    color: #64748b;
+    cursor: pointer;
+    padding: 8px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+
+    &:hover {
+      background-color: #f1f5f9;
+      color: #1a2332;
+    }
+  }
+
+  .input-wrapper {
+    flex: 1;
+    
+    input {
+      width: 100%;
+      padding: 12px 20px;
+      border: 1px solid #e2e8f0;
+      border-radius: 24px;
+      font-size: 15px;
+      outline: none;
+      transition: border-color 0.2s;
+      background-color: #f8fafc;
+      
+      &:focus {
+        border-color: #1a2332;
+        background-color: white;
+      }
+    }
+  }
+
+  .send-btn {
+    background-color: #1a2332;
+    color: white;
+    border: none;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s;
+
+    svg {
+      margin-right: -2px; /* slight visual adjustment for send icon */
+    }
+
+    &:hover:not(:disabled) {
+      background-color: #27344a;
+      transform: scale(1.05);
+    }
+
+    &:disabled {
+      background-color: #cbd5e1;
+      cursor: not-allowed;
+    }
+  }
+}

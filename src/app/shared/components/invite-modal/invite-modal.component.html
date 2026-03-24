@@ -1,0 +1,111 @@
+<div class="modal-overlay" *ngIf="isOpen">
+  <div class="modal-content invite-modal">
+    <!-- Header -->
+    <div class="im-header">
+      <h3>Inviter / Créer un patient</h3>
+      <button class="close-btn" (click)="closeModal()">&times;</button>
+    </div>
+
+    <!-- Body Layout 2 cols -->
+    <div class="im-body">
+      <!-- Col Gauche : Info -->
+      <div class="col-left">
+        <h4>Identité du patient</h4>
+        <div class="form-row">
+          <div class="form-group flex-1">
+            <label>Prénom</label>
+            <input type="text" placeholder="Prénom" [(ngModel)]="firstName">
+          </div>
+          <div class="form-group flex-1">
+            <label>Nom</label>
+            <input type="text" placeholder="Nom" [(ngModel)]="lastName">
+          </div>
+        </div>
+        
+        <div class="form-group">
+          <label>Date de naissance</label>
+          <input type="date" [(ngModel)]="dob">
+        </div>
+
+        <div class="form-row">
+          <div class="form-group flex-1">
+            <label>Téléphone</label>
+            <input type="tel" placeholder="06 XX XX XX XX" [(ngModel)]="phone">
+          </div>
+          <div class="form-group flex-1">
+            <label>Email</label>
+            <input type="email" placeholder="patient@mail.com" [(ngModel)]="email">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Clinique / Hôpital rattaché</label>
+          <select [(ngModel)]="clinic">
+            <option *ngFor="let c of clinics" [value]="c">{{ c }}</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Col Droite : Etude -->
+      <div class="col-right">
+        <h4>Associer à une étude clinique</h4>
+        <div class="form-group">
+          <label>Sélectionner une étude (Optionnel)</label>
+          <select [(ngModel)]="selectedStudy">
+            <option value="">-- Aucune étude --</option>
+            <option *ngFor="let s of studies" [value]="s.id">{{ s.name }}</option>
+          </select>
+        </div>
+
+        <!-- Questionnaire d'éligibilité si étude sélectionnée -->
+        <div class="eligibility-box" *ngIf="selectedStudy">
+          <div class="eb-title"><i class="fas fa-clipboard-check"></i> Questionnaire d'éligibilité</div>
+          
+          <div class="q-row">
+            <span>Le patient présente-t-il des symptômes actifs ?</span>
+            <div class="btn-group">
+              <button class="ans-btn" [class.yes-active]="eligibilityAnswers['q1'] === true" (click)="setAnswer('q1', true)">Oui</button>
+              <button class="ans-btn" [class.no-active]="eligibilityAnswers['q1'] === false" (click)="setAnswer('q1', false)">Non</button>
+            </div>
+          </div>
+          
+          <div class="q-row">
+            <span>Symptômes présents depuis plus de 6 mois ?</span>
+            <div class="btn-group">
+              <button class="ans-btn" [class.yes-active]="eligibilityAnswers['q2'] === true" (click)="setAnswer('q2', true)">Oui</button>
+              <button class="ans-btn" [class.no-active]="eligibilityAnswers['q2'] === false" (click)="setAnswer('q2', false)">Non</button>
+            </div>
+          </div>
+          
+          <div class="q-row">
+            <span>A-t-il déjà suivi un traitement immunosuppresseur ?</span>
+            <div class="btn-group">
+              <button class="ans-btn" [class.no-active]="eligibilityAnswers['q3'] === true" (click)="setAnswer('q3', true)">Oui</button>
+              <button class="ans-btn" [class.yes-active]="eligibilityAnswers['q3'] === false" (click)="setAnswer('q3', false)">Non</button>
+            </div>
+          </div>
+
+          <div class="q-row" style="border-bottom:none;">
+            <span>Impact sévère sur la qualité de vie (DLQI > 10) ?</span>
+            <div class="btn-group">
+              <button class="ans-btn" [class.yes-active]="eligibilityAnswers['q4'] === true" (click)="setAnswer('q4', true)">Oui</button>
+              <button class="ans-btn" [class.no-active]="eligibilityAnswers['q4'] === false" (click)="setAnswer('q4', false)">Non</button>
+            </div>
+          </div>
+        </div>
+        <div *ngIf="!selectedStudy" class="empty-state">
+          <div style="color:var(--text-secondary); text-align:center; padding: 2rem 0;">
+            <i class="fas fa-file-medical-alt" style="font-size:2rem; opacity:0.3; margin-bottom:10px; display:block;"></i>
+            Sélectionnez une étude clinique pour afficher son questionnaire d'éligibilité.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="im-footer">
+      <button class="btn-cancel" (click)="closeModal()">Annuler</button>
+      <button class="btn-validate" (click)="invitePatient()" [disabled]="!firstName || !lastName">Inviter le patient</button>
+    </div>
+  </div>
+</div>

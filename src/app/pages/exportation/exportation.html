@@ -1,0 +1,336 @@
+<div class="page-container fade-in">
+  
+  <!-- ============================================== -->
+  <!-- 1. VUE : LISTE DES EXPORTATIONS                -->
+  <!-- ============================================== -->
+  <ng-container *ngIf="view === 'list'">
+    <div class="header-action">
+      <h1 class="page-title">Exportations</h1>
+      <button class="btn btn-primary" (click)="startNewExport()">
+        Nouvelle exportation
+      </button>
+    </div>
+
+    <div class="table-container">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Date d'exportation</th>
+            <th>Nom de l'export</th>
+            <th>Utilisateur</th>
+            <th>Format</th>
+            <th>Statut</th>
+            <th class="text-right">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let export of exportsList">
+            <td>{{ export.date | date:'dd/MM/yyyy HH:mm' }}</td>
+            <td class="font-medium">{{ export.name }}</td>
+            <td>{{ export.user }}</td>
+            <td><span class="format-badge">{{ export.format }}</span></td>
+            <td>
+              <span class="status-badge" [ngClass]="export.status">
+                <span class="status-dot"></span>
+                {{ export.status === 'success' ? 'Succès' : export.status === 'pending' ? 'En attente' : export.status === 'in-progress' ? 'En cours' : 'Échec' }}
+              </span>
+            </td>
+            <td class="text-right">
+              <button class="action-btn" title="Consulter l'export">
+                <i class="fas fa-eye"></i>
+              </button>
+            </td>
+          </tr>
+          <tr *ngIf="exportsList.length === 0">
+             <td colspan="6" class="text-center text-muted py-4">Aucune exportation trouvée.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </ng-container>
+
+  <!-- ============================================== -->
+  <!-- 2. VUE : WIZARD 4 ETAPES                       -->
+  <!-- ============================================== -->
+  <ng-container *ngIf="view === 'wizard'">
+    
+    <!-- En-tête Wizard -->
+    <div class="wizard-header">
+      <div class="wizard-top-bar">
+        <button class="btn-text-nav text-left" (click)="view = 'list'">
+          <i class="fas fa-chevron-left"></i> Retour
+        </button>
+        <h2 class="wizard-main-title count-anim">
+          Exportation ({{ dynamicCount | number }})
+        </h2>
+        <div class="next-action-top">
+          <!-- Ce bouton est masqué à l'étape 4, on le place dans le bloc blanc -->
+          <button class="btn-text-nav text-right" (click)="goToNextStep()" *ngIf="currentStep < 4">
+            Suivant <i class="fas fa-chevron-right"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- Stepper Visuel progressif -->
+      <div class="stepper-area">
+        <div class="step-container" [class.active]="currentStep === 1" [class.completed]="currentStep > 1" (click)="setStep(1)">
+          <div class="step-box">1</div>
+          <div class="step-label">Études cliniques</div>
+        </div>
+        <div class="step-line" [class.active]="currentStep > 1"></div>
+        
+        <div class="step-container" [class.active]="currentStep === 2" [class.completed]="currentStep > 2" (click)="setStep(2)">
+          <div class="step-box">2</div>
+          <div class="step-label">Profil patient</div>
+        </div>
+        <div class="step-line" [class.active]="currentStep > 2"></div>
+        
+        <div class="step-container" [class.active]="currentStep === 3" [class.completed]="currentStep > 3" (click)="setStep(3)">
+          <div class="step-box">3</div>
+          <div class="step-label">Sélection des questionnaires</div>
+        </div>
+        <div class="step-line" [class.active]="currentStep > 3"></div>
+        
+        <div class="step-container" [class.active]="currentStep === 4" [class.completed]="currentStep > 4" (click)="setStep(4)">
+          <div class="step-box">4</div>
+          <div class="step-label">Paramètres d'export</div>
+        </div>
+        <div class="step-line" [class.active]="currentStep > 4"></div>
+        
+        <div class="step-container" [class.active]="currentStep === 5" [class.completed]="currentStep > 5" (click)="setStep(5)">
+          <div class="step-box">5</div>
+          <div class="step-label">Récapitulatif</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Contenu des Étapes -->
+    <div class="wizard-content">
+      
+      <!-- ÉTAPE 1: Études Cliniques -->
+      <div class="step-panel" *ngIf="currentStep === 1">
+        <div class="panel-header">
+          <h3 class="panel-subtitle">Sélectionnez l'étude clinique de votre choix</h3>
+          <p class="panel-desc">Filtrez les données patient en choisissant une cohorte spécifique.</p>
+        </div>
+        <div class="vertical-studies-list">
+          <div class="study-pill" 
+               *ngFor="let study of studies" 
+               [class.active]="selectedStudy === study.id"
+               (click)="selectStudy(study.id)">
+            {{ study.name }}
+          </div>
+        </div>
+      </div>
+
+      <!-- ÉTAPE 2: Profil Patient (Sidebar Hierarchique + Questions Formulaire) -->
+      <div class="step-panel no-padding" *ngIf="currentStep === 2">
+        <div class="two-cols-layout">
+          
+          <!-- NAVIGATION GAUCHE -->
+          <div class="left-hierarchical-sidebar">
+            <div class="cat-group" *ngFor="let cat of patientCategories">
+              <!-- Categorie: Fond Vert -->
+              <div class="cat-title-bar">{{ cat.name }}</div>
+              <!-- Questionnaires: Fond Blanc -->
+              <div class="q-list">
+                <div class="q-sidebar-item" 
+                     *ngFor="let q of cat.questionnaires"
+                     [class.active]="activeQuestionnaire?.id === q.id"
+                     (click)="setActiveQuestionnaire(q)">
+                  {{ q.name }}
+                  <i class="fas fa-chevron-right" *ngIf="activeQuestionnaire?.id === q.id"></i>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <!-- FORMAULAIRE DROITE -->
+          <div class="content-right form-preview">
+            <ng-container *ngIf="activeQuestionnaire">
+              <h3 class="right-panel-title">{{ activeQuestionnaire.name }}</h3>
+              <p class="section-instruction">Sélectionnez les champs spécifiques que vous souhaitez inclure dans l'aperçu global des données.</p>
+              
+              <div class="form-fields-list">
+                <div class="form-field-card" *ngFor="let field of activeQuestionnaire.fields">
+                  <!-- Checkbox du niveau champ -->
+                  <label class="custom-checkbox modern-block field-activator">
+                    <input type="checkbox" [(ngModel)]="field.selected">
+                    <span class="checkmark"></span>
+                    <span class="chk-label font-medium">{{ field.label }}</span>
+                  </label>
+                  
+                  <!-- Simulation de la vue formulaire (grisée si désactivée) -->
+                  <div class="field-mockup" [class.disabled-mockup]="!field.selected">
+                    
+                    <ng-container *ngIf="field.type === 'radio'">
+                      <div class="mock-radios">
+                        <label class="mock-radio custom-mock-label" *ngFor="let opt of field.options; let i = index">
+                          <input type="radio" [name]="'mock_radio_' + field.id" [checked]="i === 0"> 
+                          <span class="mock-text">{{opt}}</span>
+                        </label>
+                      </div>
+                    </ng-container>
+
+                    <ng-container *ngIf="field.type === 'checkbox'">
+                      <div class="mock-checkboxes">
+                        <label class="mock-check custom-mock-label">
+                          <input type="checkbox" checked> 
+                          <span class="mock-text">Oui</span>
+                        </label>
+                        <label class="mock-check custom-mock-label">
+                          <input type="checkbox"> 
+                          <span class="mock-text">Non</span>
+                        </label>
+                      </div>
+                    </ng-container>
+
+                  </div>
+                </div>
+              </div>
+            </ng-container>
+          </div>
+        </div>
+      </div>
+
+      <!-- ÉTAPE 3: Questionnaires (Grille des mêmes catégories) -->
+      <div class="step-panel" *ngIf="currentStep === 3">
+        <div class="panel-header">
+          <h3 class="panel-subtitle">Choix des questionnaires à exporter</h3>
+          <p class="panel-desc">Sélectionnez globalement quels questionnaires seront inclus.</p>
+        </div>
+
+        <div class="q-step3-grid">
+          <div class="q-step3-col" *ngFor="let cat of patientCategories">
+            <!-- Header Catégorie avec Checkbox -->
+            <div class="q-col-header">
+              <label class="custom-checkbox header-checkbox">
+                <input type="checkbox" [(ngModel)]="cat.selected" (change)="toggleCategory(cat)">
+                <span class="checkmark white-border"></span>
+                <span class="chk-label">{{ cat.name }}</span>
+              </label>
+            </div>
+            <!-- Liste Questionnaires -->
+            <div class="q-col-body">
+              <label class="custom-checkbox standard-margin q-check" *ngFor="let q of cat.questionnaires">
+                <input type="checkbox" [(ngModel)]="q.selected" (change)="checkCategory(cat)">
+                <span class="checkmark"></span>
+                <span class="chk-label">{{ q.name }}</span>
+              </label>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ÉTAPE 4: Paramètres d'export (Centré avec Bouton in-card) -->
+      <div class="step-panel step4-centered" *ngIf="currentStep === 4">
+        <div class="panel-header text-center">
+          <h3 class="panel-subtitle">Paramètres finaux de votre export</h3>
+        </div>
+        
+        <div class="export-form-container">
+          <div class="form-group vertical-gap">
+            <label>Nom de l'export</label>
+            <input type="text" class="form-control" [(ngModel)]="exportName" placeholder="Ex: Export-Eczema-01">
+          </div>
+          
+          <div class="form-group vertical-gap">
+            <label>Format de fichier</label>
+            <div class="select-wrapper">
+              <select class="form-control" [(ngModel)]="selectedFormat">
+                <option *ngFor="let format of exportFormats" [value]="format">{{format}}</option>
+              </select>
+              <i class="fas fa-chevron-down input-icon"></i>
+            </div>
+          </div>
+
+          <div class="action-submit-block">
+            <button class="btn btn-primary btn-xl submit-btn" (click)="goToNextStep()">
+              Enregistrer l'export
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ÉTAPE 5 : Résumé -->
+      <div class="step-panel step5-centered" *ngIf="currentStep === 5">
+        <div class="panel-header text-center">
+          <h3 class="panel-subtitle">Récapitulatif de l'exportation</h3>
+          <p class="panel-desc">Vérifiez vos paramètres avant de lancer la génération du fichier.</p>
+        </div>
+
+        <div class="summary-grid-box">
+          <div class="detail-item">
+            <div class="detail-icon"><i class="fas fa-microscope"></i></div>
+            <div class="detail-texts">
+              <span class="detail-label">Études & Cohorte</span>
+              <span class="detail-value">{{ getStudyName(selectedStudy) || 'Aucune (Base globale)' }}</span>
+            </div>
+          </div>
+          <div class="detail-item">
+            <div class="detail-icon"><i class="fas fa-file-medical"></i></div>
+            <div class="detail-texts">
+              <span class="detail-label">Questionnaires actifs</span>
+              <span class="detail-value">{{ SelectedQuestionnairesCount }} questionnaires</span>
+            </div>
+          </div>
+          <div class="detail-item">
+            <div class="detail-icon"><i class="fas fa-users"></i></div>
+            <div class="detail-texts">
+              <span class="detail-label">Volume de données</span>
+              <span class="detail-value">{{ dynamicCount | number }} entrées</span>
+            </div>
+          </div>
+          <div class="detail-item">
+            <div class="detail-icon"><i class="fas fa-file-export"></i></div>
+            <div class="detail-texts">
+              <span class="detail-label">Format sélectionné</span>
+              <span class="detail-value">{{ selectedFormat }}</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Zone de feedback dynamique -->
+        <div class="export-status-zone mt-4" *ngIf="lastExportStatus === 'in-progress' || lastExportStatus === 'success'">
+            <div *ngIf="lastExportStatus === 'in-progress'" class="status-alert progress-alert">
+                <i class="fas fa-circle-notch fa-spin"></i> Construction du fichier en cours...
+            </div>
+            <div *ngIf="lastExportStatus === 'success'" class="status-alert success-alert">
+                <i class="fas fa-check-circle"></i> Exportation générée avec succès (Réf: {{ currentExportRef }})
+            </div>
+        </div>
+
+        <!-- Boutons d'actions -->
+        <div class="action-submit-block">
+            <ng-container *ngIf="lastExportStatus === 'pending' || lastExportStatus === 'in-progress'">
+               <button class="btn btn-primary btn-xl submit-btn" (click)="launchExport()" [disabled]="lastExportStatus === 'in-progress'">
+                 <i class="fas fa-rocket"></i> Confirmer et Lancer l'export
+               </button>
+               <div style="margin-top: 1rem;">
+                 <button class="btn btn-text-nav" (click)="currentStep = 4" [disabled]="lastExportStatus === 'in-progress'">Modifier les paramètres</button>
+               </div>
+            </ng-container>
+
+            <ng-container *ngIf="lastExportStatus === 'success'">
+               <button class="btn btn-success btn-xl submit-btn success-btn" (click)="downloadLastExport()">
+                 <i class="fas fa-download"></i> Télécharger {{ exportName || 'le fichier' }}
+               </button>
+               <div style="margin-top: 1rem;">
+                 <button class="btn btn-text-nav" (click)="view = 'list'">Retourner à la liste</button>
+               </div>
+            </ng-container>
+        </div>
+      </div>
+
+      <!-- CTA Footer : Affiché seulement pour Etapes 1 à 3, maintenant inclus dans le bloc blanc -->
+      <div class="wizard-footer-cta" *ngIf="currentStep < 4">
+        <button class="btn btn-primary btn-large cta-centered" (click)="goToNextStep()">Suivant</button>
+      </div>
+
+    </div> <!-- end wizard-content -->
+
+  </ng-container>
+
+
+
+</div>

@@ -1,0 +1,51 @@
+<div class="discussion-container">
+  <div class="chat-header">
+    <div class="patient-info">
+      <div class="avatar">JD</div>
+      <div class="details">
+        <h3>Jean Dupont</h3>
+        <span class="status">En ligne</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="chat-messages">
+    <div class="message-wrapper" *ngFor="let msg of messages" [ngClass]="msg.sender">
+      <div class="message-bubble">
+        <div class="message-content" *ngIf="!msg.isVoice">
+          {{ msg.text }}
+        </div>
+        <div class="message-content voice-message" *ngIf="msg.isVoice">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="10"></circle>
+            <polygon points="10 8 16 12 10 16 10 8"></polygon>
+          </svg>
+          <span>{{ msg.text }}</span>
+        </div>
+        <div class="message-meta">
+          {{ msg.timestamp | date:'HH:mm' }}
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="chat-input-area">
+    <button class="icon-btn voice-btn" (click)="sendVoiceMessage()" title="Envoyer un message vocal">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path>
+        <path d="M19 10v2a7 7 0 0 1-14 0v-2"></path>
+        <line x1="12" y1="19" x2="12" y2="23"></line>
+        <line x1="8" y1="23" x2="16" y2="23"></line>
+      </svg>
+    </button>
+    <div class="input-wrapper">
+      <input type="text" [(ngModel)]="newMessage" (keyup.enter)="sendMessage()" placeholder="Écrivez votre message ici..." />
+    </div>
+    <button class="send-btn" (click)="sendMessage()" [disabled]="!newMessage.trim()">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <line x1="22" y1="2" x2="11" y2="13"></line>
+        <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+      </svg>
+    </button>
+  </div>
+</div>

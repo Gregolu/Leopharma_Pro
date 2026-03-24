@@ -1,0 +1,58 @@
+<div class="patient-network">
+  <div class="header">
+    <h3>Réseau</h3>
+  </div>
+  
+  <div class="category-header">
+    Professionnels de santé
+  </div>
+  
+  <div class="pro-grid">
+    <div class="pro-card" *ngFor="let pro of professionals()" [class.sent-border]="pro.status === 'sent'">
+      <div class="pro-content">
+        <div class="pro-icon" [class.sent-text]="pro.status === 'sent'">
+          <i [class]="pro.icon"></i>
+          <div class="plus-badge" *ngIf="pro.status === 'none'">
+            <i class="fas fa-plus"></i>
+          </div>
+        </div>
+        <h4 class="profession" [class.sent-text]="pro.status === 'sent'">{{ pro.profession }}</h4>
+        <p class="date" *ngIf="pro.status === 'sent' && pro.recommendationDate">
+          Recommandé le {{ pro.recommendationDate | date:'dd/MM/yyyy' }}
+        </p>
+      </div>
+      <div class="pro-action">
+        <button class="icon-btn" 
+                [class.btn-sent]="pro.status === 'sent'" 
+                [disabled]="pro.status === 'sent'"
+                (click)="openRecommendation(pro)">
+           <i class="fas fa-paper-plane"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Pop-in / Modal de Recommandation -->
+  <div class="modal-overlay" *ngIf="isModalOpen()" (click)="closeModal()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h3>Nouvelle lettre de recommandation</h3>
+        <button class="close-btn" (click)="closeModal()"><i class="fas fa-times"></i></button>
+      </div>
+      <div class="modal-body">
+        <p>Destinataire : <br>
+          <strong class="modal-profession">{{ selectedPro()?.profession }}</strong>
+        </p>
+        
+        <div class="form-group">
+          <label>Message pour le confrère</label>
+          <textarea [(ngModel)]="draftMessage" rows="8"></textarea>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-cancel" (click)="closeModal()">Annuler</button>
+        <button class="btn-send" (click)="sendRecommendation()">Envoyer la recommandation</button>
+      </div>
+    </div>
+  </div>
+</div>

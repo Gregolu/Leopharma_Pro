@@ -1,0 +1,12 @@
+--- src/app/pages/patients/patient-monitoring/patient-monitoring.html
++++ src/app/pages/patients/patient-monitoring/patient-monitoring.html
+@@ -17,9 +17,6 @@
+       <button class="btn-download">
+         <i class="fas fa-file-download"></i>
+         Télécharger le dossier patient
+-      </button>
+-      <button class="btn-add-widget" style="width: 40px; height: 40px; border-radius: 50%; background-color: #f7f9fc; border: 1px solid #d4d4d8; cursor: pointer; display: flex; align-items: center; justify-content: center; color: #1e3a29;">
+-        <i class="fas fa-plus"></i>
+       </button>
+     </div>
+   </div>

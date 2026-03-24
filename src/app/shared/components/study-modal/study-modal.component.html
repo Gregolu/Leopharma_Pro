@@ -1,0 +1,127 @@
+<div class="modal-overlay sm-overlay" *ngIf="isOpen">
+  <div class="modal-content study-modal">
+    <!-- HEADER -->
+    <div class="sm-header">
+      <div class="sm-h-left">
+        <div class="color-pastille" [ngClass]="study?.badgeClass || 'pastille-trial-a'" style="width:16px;height:16px;"></div>
+        <h3 style="margin: 0; font-size: 1.25rem;">{{ study?.name || 'Étude Clinique' }}</h3>
+      </div>
+      <button class="close-btn" (click)="closeModal()" style="background:transparent;border:none;font-size:1.5rem;cursor:pointer;">&times;</button>
+    </div>
+
+    <div class="sm-body">
+      <!-- SECTION 2: PROFIL -->
+      <div class="sm-section profile-section" style="background:#f8fafc; padding: 1rem; border-radius:8px;">
+        <div style="font-size:1rem; font-weight:600; margin-bottom:8px;">{{ patientInfo.name }} <span style="font-weight:400;color:var(--text-secondary);">({{ patientInfo.age }} ans, né le {{ patientInfo.dob }})</span></div>
+        <div style="font-size:0.9rem; color:var(--text-secondary); margin-bottom:12px;">
+          <i class="fas fa-envelope"></i> {{ patientInfo.email }} &nbsp;&nbsp;|&nbsp;&nbsp;
+          <i class="fas fa-phone"></i> {{ patientInfo.phone }}
+        </div>
+        <div style="display:flex; gap:10px;">
+          <span class="sm-badge" [ngClass]="{'bg-green': eligibilityText==='Oui', 'bg-red': eligibilityText==='Non', 'bg-orange': eligibilityText==='À vérifier'}">Éligibilité : {{ eligibilityText }}</span>
+          <span class="sm-badge" [ngClass]="{'bg-green': consentStatus==='Signé', 'bg-orange': consentStatus==='En attente', 'bg-gray': consentStatus==='Non envoyé'}">Consentement : {{ consentStatus }}</span>
+        </div>
+      </div>
+
+      <!-- SECTION 3: ELIGIBILITE -->
+      <div class="sm-section" *ngIf="modalStatus === 'check-eligibility' || eligibilityText === 'À vérifier'">
+        <h4 style="border-bottom:1px solid var(--border); padding-bottom:8px; margin-bottom:12px;">Vérification d'éligibilité</h4>
+        
+        <div class="q-row">
+          <span>Le patient a-t-il plus de 18 ans ?</span>
+          <div class="btn-group">
+            <button class="ans-btn" [class.yes-active]="eligibilityAnswers['q1'] === true" (click)="setAnswer('q1', true)">Oui</button>
+            <button class="ans-btn" [class.no-active]="eligibilityAnswers['q1'] === false" (click)="setAnswer('q1', false)">Non</button>
+          </div>
+        </div>
+        <div class="q-row">
+          <span>Présente-t-il des symptômes actifs correspondants aux critères de l'étude ?</span>
+          <div class="btn-group">
+            <button class="ans-btn" [class.yes-active]="eligibilityAnswers['q2'] === true" (click)="setAnswer('q2', true)">Oui</button>
+            <button class="ans-btn" [class.no-active]="eligibilityAnswers['q2'] === false" (click)="setAnswer('q2', false)">Non</button>
+          </div>
+        </div>
+        <div class="q-row">
+          <span>A-t-il déjà suivi un traitement immunosuppresseur dans les 6 derniers mois ?</span>
+          <div class="btn-group">
+            <button class="ans-btn" [class.no-active]="eligibilityAnswers['q3'] === true" (click)="setAnswer('q3', true)">Oui</button>
+            <button class="ans-btn" [class.yes-active]="eligibilityAnswers['q3'] === false" (click)="setAnswer('q3', false)">Non</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- SECTION 4: CONSENTEMENT -->
+      <div class="sm-section">
+        <h4 style="border-bottom:1px solid var(--border); padding-bottom:8px; margin-bottom:12px;">Consentement Patient</h4>
+        <div class="consent-state" *ngIf="consentStatus === 'Non envoyé'">
+          <div style="color:var(--text-secondary); margin-bottom:12px;">Le formulaire de consentement n'a pas encore été transmis au patient.</div>
+          <button style="background:var(--primary); color:white; border:none; padding:8px 16px; border-radius:6px; cursor:pointer;"><i class="fas fa-paper-plane"></i> Envoyer le consentement</button>
+        </div>
+        
+        <div class="consent-state" *ngIf="consentStatus === 'En attente'">
+          <div style="margin-bottom:12px;">Envoyé le : <strong>Aujourd'hui</strong> <br/><span style="color:#f59e0b;font-size:0.9rem;">En attente de signature numérique</span></div>
+          <button style="background: #f1f5f9; border:1px solid #cbd5e1; padding:8px 16px; border-radius:6px; cursor:pointer;"><i class="fas fa-sync-alt"></i> Relancer / Renvoyer</button>
+        </div>
+
+        <div class="consent-state flex-between" *ngIf="consentStatus === 'Signé'" style="display:flex; justify-content:space-between; align-items:center;">
+          <div>
+            <div style="color:#10b981; font-weight:600;"><i class="fas fa-check-circle"></i> Signé le : 14/10/2023</div>
+          </div>
+          <div style="display:flex; gap:10px;">
+            <button style="background:#f1f5f9; border:1px solid var(--border); padding:8px 12px; border-radius:6px; cursor:pointer;"><i class="fas fa-download"></i> Télécharger</button>
+            <button style="background:#fef2f2; color:#ef4444; border:1px solid #fecaca; padding:8px 12px; border-radius:6px; cursor:pointer;"><i class="fas fa-times-circle"></i> Retirer</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- SECTION 5: RGPD -->
+      <div class="sm-section" style="background: #f8fafc; padding: 12px; border-radius: 8px; font-size: 0.9rem;">
+        <h4 style="margin-top:0; margin-bottom:10px; font-size: 0.95rem;">Validation éthique & RGPD</h4>
+        <label style="display:flex; align-items:flex-start; gap:8px; margin-bottom:8px; cursor:pointer;">
+          <input type="checkbox" [checked]="rgpdChecked1" (change)="rgpdChecked1 = !rgpdChecked1" style="margin-top:4px;">
+          <span>Le patient a reçu toutes les informations claires sur la nature de l'étude clinique.</span>
+        </label>
+        <label style="display:flex; align-items:flex-start; gap:8px; cursor:pointer;">
+          <input type="checkbox" [checked]="rgpdChecked2" (change)="rgpdChecked2 = !rgpdChecked2" style="margin-top:4px;">
+          <span>Le patient comprend qu'il peut suspendre sa participation à tout moment sans justification.</span>
+        </label>
+      </div>
+
+      <!-- SECTION 6: AVANCEMENT (Seulement si active) -->
+      <div class="sm-section" *ngIf="modalStatus === 'active'" style="margin-top:1.5rem;">
+        <h4 style="border-bottom:1px solid var(--border); padding-bottom:8px; margin-bottom:16px;">Avancement du protocole</h4>
+        <div class="sm-timeline" style="display:flex; justify-content:space-between; position:relative;">
+          <div class="tl-line" style="position:absolute; top:12px; left:20px; right:20px; height:2px; background:var(--border); z-index:1;"></div>
+          
+          <div class="tl-step" style="z-index:2; text-align:center; flex:1;">
+            <div class="tl-dot" style="width:26px; height:26px; border-radius:50%; background:#10b981; color:white; display:flex; align-items:center; justify-content:center; margin:0 auto 8px;"><i class="fas fa-check" style="font-size:0.7rem;"></i></div>
+            <div style="font-size:0.8rem; font-weight:600;">T0</div>
+          </div>
+          <div class="tl-step" style="z-index:2; text-align:center; flex:1;">
+            <div class="tl-dot" style="width:26px; height:26px; border-radius:50%; background:#10b981; color:white; display:flex; align-items:center; justify-content:center; margin:0 auto 8px;"><i class="fas fa-check" style="font-size:0.7rem;"></i></div>
+            <div style="font-size:0.8rem; font-weight:600;">3 mois</div>
+          </div>
+          <div class="tl-step" style="z-index:2; text-align:center; flex:1;">
+            <div class="tl-dot" style="width:26px; height:26px; border-radius:50%; background:white; border:2px solid var(--primary); margin:0 auto 8px;"></div>
+            <div style="font-size:0.8rem; font-weight:600; color:var(--primary);">6 mois</div>
+          </div>
+          <div class="tl-step" style="z-index:2; text-align:center; flex:1;">
+            <div class="tl-dot" style="width:26px; height:26px; border-radius:50%; background:white; border:2px solid var(--border); margin:0 auto 8px;"></div>
+            <div style="font-size:0.8rem; color:var(--text-secondary);">12 mois</div>
+          </div>
+          <div class="tl-step" style="z-index:2; text-align:center; flex:1;">
+            <div class="tl-dot" style="width:26px; height:26px; border-radius:50%; background:white; border:2px solid var(--border); margin:0 auto 8px;"></div>
+            <div style="font-size:0.8rem; color:var(--text-secondary);">24 mois</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- SECTION 7: ACTIONS (FOOTER) -->
+    <div class="sm-footer" style="padding: 16px 24px; border-top: 1px solid var(--border); display: flex; justify-content: flex-end; gap: 12px; background: #fbfbfc;">
+      <button style="background:transparent; border:1px solid #cbd5e1; padding:10px 20px; border-radius:6px; font-weight:600; cursor:pointer;" (click)="closeModal()">Annuler</button>
+      <button style="background:var(--primary); color:white; border:none; padding:10px 24px; border-radius:6px; font-weight:600; cursor:pointer;" (click)="closeModal()">Valider & Enregistrer</button>
+    </div>
+  </div>
+</div>

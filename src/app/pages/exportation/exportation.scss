@@ -1,0 +1,253 @@
+// Couleurs du Design System
+$primary: #204131; 
+$primary-light: #306148;
+$primary-dark: #12281d;
+$bg-main: #f4f6f8;
+$border: #e2e8f0;
+
+$text-main: #1f2937;
+$text-muted: #64748b;
+$text-white: #ffffff;
+
+// Statuts
+$success: #10b981;
+$pending: #f59e0b;
+$error: #ef4444;
+
+.page-container { padding: 2rem; max-width: 1200px; margin: 0 auto; }
+.fade-in { animation: fadeIn 0.3s ease-in-out; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+.count-anim { transition: all 0.3s ease; }
+
+// Typographie
+.page-title { font-size: 1.8rem; color: $primary; margin: 0; font-weight: 700; }
+.font-medium { font-weight: 600; }
+.text-center { text-align: center; }
+.text-right { text-align: right; }
+.text-left { text-align: left; }
+.text-muted { color: $text-muted; }
+.mb-2 { margin-bottom: 0.5rem; }
+.mb-4 { margin-bottom: 1.5rem; }
+.mt-3 { margin-top: 1rem; }
+.py-4 { padding-top: 1.5rem; padding-bottom: 1.5rem; }
+
+.header-action { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; }
+
+// Boutons
+.btn {
+  padding: 0.6rem 1.2rem; border-radius: 6px; font-weight: 500; cursor: pointer; border: none; transition: all 0.2s; display: inline-flex; align-items: center; justify-content: center; gap: 0.6rem;
+  
+  &-primary { background: $primary; color: $text-white; &:hover { background: $primary-light; } }
+  &-outline { background: transparent; border: 1px solid $border; color: $text-main; &:hover { background: $bg-main; } }
+  &-large { padding: 0.8rem 2.5rem; font-size: 1.1rem; border-radius: 8px; }
+  &-xl { padding: 1rem 3rem; font-size: 1.1rem; border-radius: 8px; }
+  &-full { width: 100%; padding: 0.9rem; font-size: 1.05rem; }
+  &-danger-text { background: transparent; color: $error; border: none; font-weight: 500; font-size: 0.95rem; cursor: pointer; transition: 0.2s; &:hover { text-decoration: underline; color: darken($error, 10%); } }
+}
+.action-btn { background: transparent; color: $text-muted; border: none; cursor: pointer; padding: 0.5rem; &:hover { color: $primary; } }
+.btn-text-nav {
+  background: transparent; border: none; color: $primary; font-size: 1rem; font-weight: 600; cursor: pointer; transition: 0.2s; padding: 0.5rem 1rem;
+  &:hover { color: $primary-light; }
+  i { font-size: 0.9rem; margin: 0 4px; }
+}
+
+// Table
+.table-container {
+  background: white; border-radius: 12px; padding: 1rem; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+}
+.data-table {
+  width: 100%; border-collapse: collapse; text-align: left;
+  th { padding: 1rem; color: $text-muted; font-weight: 600; font-size: 0.85rem; text-transform: uppercase; border-bottom: 2px solid $bg-main; }
+  td { padding: 1rem; border-bottom: 1px solid $border; color: $text-main; font-size: 0.95rem; }
+  tr:last-child td { border-bottom: none; }
+  tr:hover { background: rgba($bg-main, 0.5); }
+}
+
+.format-badge { background: $bg-main; color: $text-main; padding: 0.3rem 0.8rem; border-radius: 20px; font-size: 0.8rem; font-weight: 600; border: 1px solid $border; }
+.status-badge {
+  display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.3rem 0.8rem; border-radius: 20px; font-size: 0.85rem; font-weight: 500;
+  .status-dot { width: 8px; height: 8px; border-radius: 50%; }
+  &.success { background: rgba($success, 0.1); color: darken($success, 10%); .status-dot { background: $success; } }
+  &.pending { background: rgba($pending, 0.1); color: darken($pending, 10%); .status-dot { background: $pending; } }
+  &.in-progress { background: rgba($primary, 0.1); color: $primary; .status-dot { background: $primary; animation: pulse 1.5s infinite; } }
+  &.error { background: rgba($error, 0.1); color: darken($error, 10%); .status-dot { background: $error; } }
+}
+
+@keyframes pulse { 0% { opacity: 1; transform: scale(1); } 50% { opacity: 0.5; transform: scale(1.2); } 100% { opacity: 1; transform: scale(1); } }
+
+// WIZARD
+.wizard-header { margin-bottom: 2rem; background: white; padding: 1.5rem 2rem; border-radius: 12px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); }
+.wizard-top-bar { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.5rem; }
+.wizard-main-title { font-size: 1.5rem; color: $primary; margin: 0; font-weight: 700; flex: 1; text-align: center; }
+.next-action-top { width: 100px; }
+
+.stepper-area {
+  display: flex; align-items: center; justify-content: space-between; width: 100%; max-width: 800px; margin: 0 auto;
+}
+.step-container {
+  display: flex; flex-direction: column; align-items: center; cursor: pointer; position: relative; z-index: 1;
+  .step-box {
+    width: 40px; height: 40px; border-radius: 50%; background: white; border: 2px solid $border; display: flex; align-items: center; justify-content: center; font-weight: 600; color: $text-muted; transition: all 0.3s; margin-bottom: 0.5rem;
+  }
+  .step-label { font-size: 0.8rem; color: $text-muted; font-weight: 500; transition: all 0.3s; text-align: center; max-width: 100px; }
+  
+  &.active {
+    .step-box { border-color: $primary; background: rgba($primary, 0.1); color: $primary; box-shadow: 0 0 0 4px rgba($primary, 0.05); }
+    .step-label { color: $primary; font-weight: 600; }
+  }
+  &.completed {
+    .step-box { background: $primary; border-color: $primary; color: white; }
+    .step-label { color: $primary; }
+  }
+}
+.step-line {
+  flex: 1; height: 2px; background: $border; margin: 0 10px; position: relative; top: -15px; z-index: 0; transition: all 0.3s;
+  &.active { background: $primary; }
+}
+
+.wizard-content {
+  background: white; border-radius: 12px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); overflow: hidden;
+}
+.step-panel { padding: 2rem; min-height: 400px; }
+.step-panel.no-padding { padding: 0; }
+
+.panel-header { margin-bottom: 2rem; }
+.panel-subtitle { font-size: 1.3rem; color: $text-main; margin: 0 0 0.5rem 0; font-weight: 600; }
+.panel-desc { color: $text-muted; margin: 0; font-size: 0.95rem; }
+
+// ETAPE 1: Etudes
+.vertical-studies-list {
+  display: flex; flex-direction: column; gap: 1rem; max-width: 600px; margin: 0 auto;
+}
+.study-pill {
+  padding: 1.2rem 1.5rem; border: 1px solid $border; border-radius: 8px; cursor: pointer; transition: all 0.2s; font-weight: 500; font-size: 1.05rem; display: flex; align-items: center; justify-content: space-between;
+  &:hover { border-color: $primary-light; background: rgba($primary, 0.02); }
+  &.active { background: rgba($primary, 0.05); border-color: $primary; color: $primary; border-left: 4px solid $primary; font-weight: 600; }
+}
+
+// ETAPE 2: Sidebar
+.two-cols-layout { display: flex; min-height: 500px; }
+.left-hierarchical-sidebar {
+  width: 300px; border-right: 1px solid $border; background: $bg-main; flex-shrink: 0; overflow-y: auto; max-height: 600px;
+}
+.cat-group {
+  margin-bottom: 1px;
+}
+.cat-title-bar {
+  background: $primary; color: white; padding: 1rem 1.2rem; font-weight: 600; font-size: 0.95rem; text-transform: uppercase; letter-spacing: 0.5px; position: sticky; top: 0; z-index: 2;
+}
+.q-list { background: white; }
+.q-sidebar-item {
+  padding: 1rem 1.2rem; border-bottom: 1px solid $border; cursor: pointer; font-size: 0.95rem; display: flex; justify-content: space-between; align-items: center; transition: all 0.2s; color: $text-main;
+  &:hover { background: rgba($primary, 0.02); }
+  &.active { background: rgba($primary, 0.05); color: $primary; font-weight: 600; }
+  i { color: $primary; font-size: 0.8rem; }
+}
+
+.content-right { flex: 1; padding: 2rem; overflow-y: auto; max-height: 600px; }
+.right-panel-title { font-size: 1.4rem; color: $primary-dark; margin: 0 0 0.5rem 0; }
+.section-instruction { color: $text-muted; margin-bottom: 2rem; font-size: 0.95rem; }
+
+.form-fields-list { display: flex; flex-direction: column; gap: 1rem; }
+.form-field-card {
+  border: 1px solid $border; border-radius: 8px; overflow: hidden;
+}
+.field-activator {
+  display: block; padding: 1rem 1.5rem; background: rgba($bg-main, 0.5); border-bottom: 1px solid $border; margin: 0;
+}
+.field-mockup {
+  padding: 1.5rem; background: white; transition: all 0.3s;
+  &.disabled-mockup { opacity: 0.4; pointer-events: none; filter: grayscale(100%); }
+}
+
+// ETAPE 3: Grid
+.q-step3-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; align-items: start; }
+.q-step3-col { border: 1px solid $border; border-radius: 8px; overflow: hidden; background: white; }
+.q-col-header { background: $primary; color: white; padding: 1rem; }
+.q-col-body { padding: 1rem; display: flex; flex-direction: column; gap: 0.8rem; }
+
+// Checkboxes Custom
+.custom-checkbox {
+  display: flex; align-items: center; position: relative; padding-left: 30px; cursor: pointer; font-size: 1rem; user-select: none;
+  input { position: absolute; opacity: 0; cursor: pointer; height: 0; width: 0; }
+  .checkmark { position: absolute; top: 50%; left: 0; transform: translateY(-50%); height: 20px; width: 20px; background-color: white; border: 2px solid $border; border-radius: 4px; transition: all 0.2s; }
+  &:hover input ~ .checkmark { border-color: $primary-light; }
+  input:checked ~ .checkmark { background-color: $primary; border-color: $primary; }
+  .checkmark:after { content: ""; position: absolute; display: none; left: 6px; top: 2px; width: 4px; height: 10px; border: solid white; border-width: 0 2px 2px 0; transform: rotate(45deg); }
+  input:checked ~ .checkmark:after { display: block; }
+  
+  &.header-checkbox {
+    color: white;
+    .checkmark { background-color: transparent; border-color: rgba(255,255,255,0.5); }
+    &:hover input ~ .checkmark { border-color: white; }
+    input:checked ~ .checkmark { background-color: white; border-color: white; }
+    input:checked ~ .checkmark:after { border-color: $primary; }
+  }
+}
+.chk-label { font-size: 0.95rem; }
+
+// Inputs Mockups
+.mock-radios, .mock-checkboxes { display: flex; gap: 1.5rem; flex-wrap: wrap; }
+.custom-mock-label {
+  display: flex; align-items: center; gap: 0.5rem; cursor: pointer; color: $text-main; font-size: 0.95rem;
+  input { accent-color: $primary; width: 1.1rem; height: 1.1rem; cursor: pointer; }
+}
+
+// ETAPE 4: Export Param
+.step4-centered { display: flex; flex-direction: column; align-items: center; padding: 4rem 2rem; }
+.export-form-container { width: 100%; max-width: 500px; display: flex; flex-direction: column; gap: 1.5rem; }
+.form-group {
+  display: flex; flex-direction: column; gap: 0.5rem;
+  label { font-weight: 600; color: $text-main; font-size: 0.95rem; }
+}
+.form-control {
+  padding: 0.8rem 1rem; border: 1px solid $border; border-radius: 6px; font-size: 1rem; width: 100%; font-family: inherit; color: $text-main; background: white; transition: border-color 0.2s;
+  &:focus { outline: none; border-color: $primary; box-shadow: 0 0 0 3px rgba($primary, 0.1); }
+}
+select.form-control { appearance: none; cursor: pointer; }
+.select-wrapper {
+  position: relative;
+  .input-icon { position: absolute; right: 1rem; top: 50%; transform: translateY(-50%); color: $text-muted; pointer-events: none; }
+}
+.action-submit-block { margin-top: 1rem; text-align: center; }
+
+// ETAPE 5: Récapitulatif
+.step5-centered { display: flex; flex-direction: column; justify-content: center; align-items: center; min-height: 480px; padding: 3rem; }
+.summary-grid-box { 
+  display: grid; grid-template-columns: repeat(2, 1fr); gap: 2rem; 
+  background: $bg-main; padding: 2rem; border-radius: 12px; 
+  margin-bottom: 2rem; width: 100%; max-width: 650px; border: 1px solid $border;
+}
+.detail-item { 
+  display: flex; align-items: center; gap: 1rem; 
+  .detail-icon { 
+    width: 45px; height: 45px; border-radius: 50%; background: white; 
+    color: $primary; display: flex; align-items: center; justify-content: center; 
+    font-size: 1.2rem; box-shadow: 0 2px 4px rgba(0,0,0,0.05); flex-shrink: 0;
+  }
+  .detail-texts { 
+    display: flex; flex-direction: column; 
+    .detail-label { font-size: 0.9rem; color: $text-muted; text-transform: uppercase; font-weight: 600; letter-spacing: 0.5px; }
+    .detail-value { font-size: 1.15rem; color: $text-main; font-weight: 700; line-height: 1.3; }
+  }
+}
+.export-status-zone { width: 100%; max-width: 650px; text-align: center; }
+.status-alert {
+  padding: 1.5rem; border-radius: 8px; font-weight: 600; font-size: 1.1rem;
+  display: flex; align-items: center; justify-content: center; gap: 0.8rem;
+  &.progress-alert { background: rgba($primary, 0.1); color: $primary; }
+  &.success-alert { background: rgba($success, 0.15); color: darken($success, 10%); }
+}
+
+// FOOTER CTA WIZARD
+.wizard-footer-cta {
+  display: flex;
+  justify-content: center;
+  padding: 2rem;
+  border-top: 1px solid $border;
+  background: white;
+  margin-top: 1rem;
+}
+
+  .btn-success { background: $success; color: $text-white; border: none; &:hover { background: darken($success, 5%); } }
