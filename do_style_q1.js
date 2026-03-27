@@ -1,141 +1,192 @@
-<div class="patient-dossier-wrapper" style="display: grid; grid-template-columns: 320px minmax(0, 1fr); min-height: 100vh; background: var(--bg-color);">
+const fs = require('fs');
 
-  <!-- COLONNE GAUCHE: Navigation -->
-  <div class="sidebar-left" style="display: flex; flex-direction: column; border-right: 1px solid var(--border); overflow-y: auto;">
-    
-    <div class="categories-container" style="padding: 16px;">
-      <div class="cat-group" *ngFor="let cat of categories">
-        <div class="cat-header" (click)="toggleCategory(cat)">
-          <span>{{ cat.name }}</span>
-          <i class="fas" [ngClass]="cat.expanded ? 'fa-chevron-down' : 'fa-chevron-right'"></i>
-        </div>
-        
-        <div class="cat-list" *ngIf="cat.expanded">
-          <div class="q-item" 
-               *ngFor="let q of cat.questionnaires"
-               [class.active]="activeQuestionnaireId === q.id"
-               (click)="selectQuestionnaire(q)">
-            
-            <div class="status-dot" [class.success]="q.status === 'completed'" [class.error]="q.status === 'incomplete'"></div>
-            <div class="q-name" style="flex: 1; margin-left: 8px; font-size: 0.9rem;">{{ q.name }}</div>
-            
-            <div class="q-type-icon" style="color: var(--text-secondary);">
-               <i class="fas fa-user-injured" *ngIf="q.type === 'patient'" title="Patient"></i>
-               <i class="fas fa-stethoscope" *ngIf="q.type === 'pro'" title="Professionnel"></i>
-               <i class="fas fa-hands-helping" *ngIf="q.type === 'mixed'" title="Patient + professionnel"></i>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
+const htmlPath = 'src/app/pages/patients/patient-dossier/patient-dossier.component.html';
+const scssPath = 'src/app/pages/patients/patient-dossier/patient-dossier.component.scss';
 
-    <!-- Légende -->
-      <div class="sidebar-legend" style="margin: 12px; margin-top: auto; padding: 10px; font-size: 0.75rem;">
-        <h4 class="legend-title" style="font-size: 0.85rem; margin-bottom: 4px; margin-top: 0;">Légende</h4>
-        <div class="legend-row" style="margin-bottom: 2px;">
-          <div class="status-dot success" style="width:8px;height:8px;background:#10b981;border-radius:50%;"></div> <span>Complété</span>
-        </div>
-        <div class="legend-row" style="margin-bottom: 2px;">
-          <div class="status-dot error" style="width:8px;height:8px;background:#ef4444;border-radius:50%;"></div> <span>Non complété</span>
-        </div>
-        <div class="legend-row mt-2" style="margin-top: 6px; margin-bottom: 2px;">
-          <i class="fas fa-user-injured legend-icon" style="width:16px;text-align:center;"></i> <span>Patient</span>
-        </div>
-        <div class="legend-row" style="margin-bottom: 2px;">
-          <i class="fas fa-stethoscope legend-icon" style="width:16px;text-align:center;"></i> <span>Pro</span>
-        </div>
-        <div class="legend-row" style="margin-bottom: 2px;">
-          <i class="fas fa-hands-helping legend-icon" style="width:16px;text-align:center;"></i> <span>Patient + pro</span>
-        </div>
-      </div>
-    </div> <!-- FIN sidebar-left -->
+// 1. UPDATE SCSS
+let scss = fs.readFileSync(scssPath, 'utf8');
 
-    <!-- COLONNE DROITE: Contenu principal -->
-  <div class="main-content" style="padding: 2rem; overflow-y: auto; display: block;">
-    
-    <!-- HEADER -->
-    <div class="dossier-header">
-      <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
-      <h2 class="q-main-title" style="margin-top:0; font-size: 1.5rem; color: var(--primary);">{{ activeQuestionnaireName }}</h2>
-      
-    </div>
-      
-      <div class="header-split" style="display: flex; justify-content: space-between; align-items: flex-start; margin-top: 1.5rem;">
-        
-        <!-- Instances : Cards -->
-        <div class="instances-block">
-          <div class="instances-cards">
-             <div class="instance-card" 
-                  *ngFor="let inst of instances"
-                  [class.active]="activeInstanceId === inst.id"
-                  (click)="selectInstance(inst)">
-                <div class="card-date"><i class="fas fa-calendar-day" style="margin-right:6px; color:var(--text-secondary)"></i>{{ inst.date }}</div>
-                <div class="card-suivi">Suivi : <strong>{{ inst.followUp }}</strong></div>
-                <div class="card-prog">Avancement : {{ inst.progress }}%</div>
-             </div>
-          </div>
-          
-          <button class="btn-create-icon" (click)="createNewInstance()" title="Créer une nouvelle instance">
-             <i class="fas fa-plus"></i>
-          </button>
-        </div>
+// remove previous ui-* definitions at the end
+scss = scss.replace(/\.ui-card-btn \{[\s\S]*?\.custom-card-block \{.*?\}/, '');
 
-        <!-- Info clinique avec Triangles -->
-        <div class="context-info-block" style="background: white; border: 1px solid var(--border); padding: 1rem; border-radius: 8px; min-width: 250px;">
-          <div class="info-line" style="display: flex; align-items: center; margin-bottom: 12px;">
-            <div class="vignette-triangle vignette-severe"></div> 
-            <div class="info-texts">
-               <div style="font-weight: 700; color: var(--text-primary);">Eczéma sévère</div>
-               <div style="font-size: 0.8rem; color: var(--text-secondary); text-transform: uppercase;">Suivi thérapeutique</div>
-            </div>
-          </div>
-          <div class="info-line" style="display: flex; align-items: center;">
-            <div class="vignette-triangle vignette-trial-a"></div> 
-            <div class="info-texts">
-               <div style="font-weight: 700; color: var(--text-primary);">Eczema Care Trial A</div>
-               <div style="font-size: 0.8rem; color: var(--text-secondary); text-transform: uppercase;">Étude clinique</div>
-            </div>
-          </div>
-        </div>
-      </div>
-      
-      <div class="progress-wrapper mt-4" style="margin-top: 2rem;">
-         <div class="prog-text-center" style="font-weight: 600; margin-bottom: 6px;">Pourcentage d'avancement : {{ currentProgressIndicator }}%</div>
-         <div class="progress-bar-container" style="height: 8px; background: var(--border); border-radius: 4px; overflow: hidden;">
-            <div class="bar-fill" [style.width.%]="currentProgressIndicator" style="height: 100%; background: var(--primary); transition: width 0.3s ease;"></div>
-         </div>
-      </div>
-    </div>
+const newScss = `
+.custom-card-block {
+    background: #ffffff;
+    padding: 24px;
+    border-radius: 16px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+    margin-bottom: 20px;
+}
 
-    <hr class="header-divider" style="border:0; border-top: 1px solid var(--border); margin: 2rem 0;">
+.custom-card-title {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #111827;
+    margin-top: 0;
+    margin-bottom: 20px;
+}
 
-    <!-- QUESTIONS -->
-    <div class="questionnaire-body">
-      
-      <div class="body-top-bar" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
-         <div class="date-picker-mock" style="display:flex; align-items:center; gap: 1rem;">
-            <label style="font-weight:600;">Date du questionnaire</label>
-            <div class="input-wrapper" style="position:relative;">
-               <input type="text" value="20/08/2025" [disabled]="!isEditMode" style="padding: 8px 12px; border: 1px solid var(--border); border-radius: 6px;">
-               <i class="fas fa-calendar-alt" style="position:absolute; right: 12px; transform: translateY(50%); top: 0px; color: var(--text-secondary);"></i>
-            </div>
-         </div>
-         
-         <!-- Bouton Modifier / Sauvegarder / Annuler -->
-         <div class="actions-right">
-            <button class="btn-action btn-outline" *ngIf="!isEditMode" (click)="toggleEditMode()" style="padding: 8px 16px; border-radius: 20px; border: 1px solid var(--primary); color: var(--primary); background: transparent; cursor: pointer; display:flex; align-items: center; gap: 8px; font-weight: 600;">
-              <i class="fas fa-pen"></i> Modifier
-            </button>
-            <ng-container *ngIf="isEditMode">
-              <button class="btn-action btn-outline" (click)="cancelEdits()" style="padding: 8px 16px; border-radius: 20px; border: 1px solid var(--text-secondary); color: var(--text-secondary); background: transparent; cursor: pointer; margin-right: 12px; font-weight: 600;">Annuler</button>
-              <button class="btn-action btn-primary" (click)="saveEdits()" style="padding: 8px 16px; border-radius: 20px; border: none; color: white; background: var(--primary); cursor: pointer; font-weight: 600;">Sauvegarder</button>
-            </ng-container>
-         </div>
-      </div>
+/* Big Grid Buttons (Oui / Non, Droitier / Gaucher) */
+.ui-card-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: #f9fafb;
+    border: 1px solid transparent;
+    border-radius: 12px;
+    padding: 24px 16px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    color: #374151;
+    font-weight: 500;
+}
+.ui-card-btn i {
+    font-size: 1.8rem;
+    margin-bottom: 12px;
+    color: #6b7280;
+    font-weight: 300; /* For thinner icons if using pro fonts, fallback for solid */
+}
+.ui-card-btn:hover:not(.disabled) {
+    background: #f3f4f6;
+}
+.ui-card-btn.selected {
+    border-color: var(--primary, #1a5632);
+    background: rgba(46, 125, 50, 0.05); /* very light green */
+    color: #000; /* or var(--primary) but screenshot has dark text */
+}
+.ui-card-btn.selected i {
+    color: var(--primary, #1a5632);
+}
+.ui-card-btn.disabled { opacity: 0.5; cursor: default; }
 
-      <div class="questions-list" style="display: flex; flex-direction: column; gap: 24px;">
+/* List Row Options (Q5, Q8, etc.) */
+.ui-list-row {
+    display: flex;
+    align-items: center;
+    background: #f9fafb;
+    border: 1px solid #f3f4f6; /* soft border instead of transparent for differentiation in screenshot */
+    border-radius: 12px;
+    padding: 16px;
+    margin-bottom: 12px;
+    cursor: pointer;
+    transition: all 0.2s;
+    color: #374151;
+    font-weight: 500;
+}
+.ui-list-row:last-child { margin-bottom: 0; }
+.ui-list-row i {
+    margin-right: 12px;
+    font-size: 1.3rem;
+    color: #6b7280;
+}
+.ui-list-row:hover:not(.disabled) {
+    background: #f3f4f6;
+}
+.ui-list-row.selected {
+    border-color: var(--primary, #1a5632);
+    background: rgba(46, 125, 50, 0.08); /* light green matching screenshot */
+}
+.ui-list-row.selected i {
+    color: #000;
+}
+.ui-list-row.disabled { opacity: 0.5; cursor: default; }
 
-        <!-- CUSTOM UI FOR Q1 -->
+/* 2 Column Grid Rows (Q11 Circonstances) */
+.ui-grid-rows {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+}
+.ui-grid-rows .ui-list-row {
+    margin-bottom: 0;
+}
+
+/* Stepper (Q7) */
+.ui-stepper-wrap {
+    background: #f9fafb;
+    border-radius: 30px;
+    padding: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 32px;
+}
+.ui-stepper-btn {
+    background: white;
+    border: none;
+    border-radius: 50%;
+    width: 48px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 1.5rem;
+    color: #111827;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05); /* very soft shadow */
+    transition: all 0.2s;
+}
+.ui-stepper-btn:hover:not([disabled]) { box-shadow: 0 4px 8px rgba(0,0,0,0.08); }
+.ui-stepper-btn[disabled] { opacity: 0.4; cursor: default; }
+
+.ui-stepper-val {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #111827;
+    min-width: 40px;
+    text-align: center;
+}
+
+/* Date input */
+.ui-date-input {
+    width: 100%;
+    padding: 16px;
+    background: white;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    font-size: 1rem;
+    color: #111827;
+    font-family: inherit;
+    outline: none;
+    transition: border-color 0.2s;
+}
+.ui-date-input:focus {
+    border-color: var(--primary, #1a5632);
+}
+
+.save-btn-bottom {
+    display: block;
+    width: 100%;
+    background: var(--primary, #1a5632);
+    color: white;
+    font-size: 1.1rem;
+    font-weight: 600;
+    text-align: center;
+    padding: 18px;
+    border-radius: 30px; /* Big pill shape */
+    border: none;
+    cursor: pointer;
+    margin-top: 32px;
+}
+.save-btn-bottom:hover {
+    background: var(--primary-light, #236c40);
+}
+`;
+scss += newScss;
+fs.writeFileSync(scssPath, scss);
+
+// 2. UPDATE HTML
+let html = fs.readFileSync(htmlPath, 'utf8');
+
+const startTagStr = '<!-- CUSTOM UI FOR Q1 -->';
+const endTagStr = '</ng-container>';
+
+const startIdx = html.indexOf(startTagStr);
+const endIdx = html.indexOf(endTagStr, startIdx);
+
+if (startIdx !== -1 && endIdx !== -1) {
+    const replacement = `<!-- CUSTOM UI FOR Q1 -->
         <ng-container *ngIf="activeQuestionnaireId === 'q1'; else defaultQuestions">
           
           <!-- Q1: Lésions mains et poignets -->
@@ -350,78 +401,11 @@
           
           <button class="save-btn-bottom">Sauvegarder et passer à la suite</button>
 
-        </ng-container>
+        </ng-container>`;
 
-        <ng-template #defaultQuestions>
-        <div class="q-block" *ngFor="let q of questions" style="background: white; padding: 20px; border: 1px solid var(--border); border-radius: 8px;">
-           <h4 class="question-text" style="margin-top: 0; margin-bottom: 16px; font-size: 1.1rem;">{{ q.text }}</h4>
-           <div class="options-row custom-flex" style="display: flex; gap: 12px; flex-wrap: wrap;">
-             
-             <!-- Options -->
-             <button class="opt-btn" 
-                     *ngFor="let opt of q.options"
-                     [ngStyle]="{'background': q.value === opt ? (isEditMode && q.modified ? '#fff7ed' : 'var(--primary)') : 'transparent', 'color': q.value === opt ? (isEditMode && q.modified ? '#f97316' : 'white') : 'var(--text-primary)', 'border': q.value === opt ? (isEditMode && q.modified ? '1px solid #f97316' : '1px solid var(--primary)') : '1px solid var(--border)', 'opacity': !isEditMode && q.value !== opt ? 0.5 : 1}"
-                     style="padding: 10px 16px; border-radius: 6px; cursor: pointer; font-weight: 500; font-size: 0.95rem; transition: all 0.2s;"
-                     (click)="selectOption(q, opt)">
-                {{ opt }}
-             </button>
-
-             <!-- Actions si modifié & historique -->
-             <div class="edit-tools" style="display: flex; align-items: center; margin-left: auto; gap: 12px;" *ngIf="true">
-                <button class="tool-btn undo-btn" *ngIf="isEditMode && q.modified" (click)="undoChange(q)" title="Annuler la modification" style="background: transparent; border: none; color: #f97316; cursor: pointer; font-size: 1.2rem;">
-                  <i class="fas fa-undo"></i>
-                </button>
-                <button class="tool-btn hist-btn" (click)="showHistory(q)" title="Voir l'historique" style="background: transparent; border: none; color: var(--text-secondary); cursor: pointer; font-size: 1.2rem;" *ngIf="q.modified">
-                  <i class="fas fa-history"></i>
-                </button>
-             </div>
-
-           </div>
-        </div>
-        </ng-template>
-
-      </div>
-
-    </div>
-
-  </div>
-
-  <!-- History Modal -->
-  <div class="modal-overlay" *ngIf="showHistoryModal" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; z-index: 9999;">
-    <div class="modal-content" style="background: white; border-radius: 12px; width: 500px; max-width: 90vw; padding: 0; overflow: hidden; box-shadow: 0 10px 25px rgba(0,0,0,0.15);">
-      <div class="modal-header" style="background: #f8fafc; padding: 20px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center;">
-        <h3 style="margin: 0; color: var(--text-primary); font-size: 1.25rem;">Historique de modification</h3>
-        <button (click)="closeHistory()" style="background: transparent; border: none; font-size: 1.5rem; cursor: pointer; color: var(--text-secondary);">&times;</button>
-      </div>
-      <div class="modal-body" style="padding: 24px;">
-        <h4 style="margin-top: 0; margin-bottom: 20px; color: var(--primary);">{{ selectedHistoryQuestion?.text }}</h4>
-        
-        <div style="display: flex; gap: 20px; margin-bottom: 20px;">
-          <div style="flex: 1; padding: 16px; background: #f1f5f9; border-radius: 8px;">
-            <div style="font-size: 0.85rem; color: var(--text-secondary); text-transform: uppercase; margin-bottom: 8px; font-weight: 600;">Valeur avant</div>
-            <div style="font-weight: 600; color: #64748b;">{{ selectedHistoryQuestion?.originalValue || 'Non renseigné' }}</div>
-          </div>
-          
-          <div style="display: flex; align-items: center; color: var(--text-secondary);">
-            <i class="fas fa-arrow-right"></i>
-          </div>
-          
-          <div style="flex: 1; padding: 16px; background: #fff7ed; border: 1px solid #fdba74; border-radius: 8px;">
-            <div style="font-size: 0.85rem; color: #ea580c; text-transform: uppercase; margin-bottom: 8px; font-weight: 600;">Valeur après</div>
-            <div style="font-weight: 600; color: #c2410c;">{{ selectedHistoryQuestion?.value }}</div>
-          </div>
-        </div>
-
-        <div style="display: flex; gap: 16px; font-size: 0.9rem; color: var(--text-secondary); background: #f8fafc; padding: 12px 16px; border-radius: 8px;">
-          <div><i class="fas fa-user-md" style="margin-right: 8px;"></i>Modifié par : <strong>{{ selectedHistoryQuestion?.modifiedBy || 'Dr. Médecin' }}</strong></div>
-          <div><i class="fas fa-clock" style="margin-right: 8px;"></i>Le : <strong>{{ selectedHistoryQuestion?.modifiedAt || 'Aujourd&apos;hui' }}</strong></div>
-        </div>
-      </div>
-      <div class="modal-footer" style="padding: 16px 24px; border-top: 1px solid var(--border); text-align: right;">
-        <button (click)="closeHistory()" style="background: var(--primary); color: white; border: none; padding: 10px 24px; border-radius: 6px; font-weight: 600; cursor: pointer;">Fermer</button>
-      </div>
-    </div>
-  </div>
-
-
-</div>
+    html = html.substring(0, startIdx) + replacement + html.substring(endIdx + endTagStr.length);
+    fs.writeFileSync(htmlPath, html);
+    console.log("HTML and SCSS fully updated according to the screenshots design.");
+} else {
+    console.log("Could not find insertion points in HTML.");
+}

@@ -226,20 +226,20 @@ select.form-control { appearance: none; cursor: pointer; }
     width: 52px;
     height: 52px;
     border-radius: 50%;
-    background: #16a34a; /* green-600 */
+    background: #204131; /* green-600 */
     color: white;
     display: flex;
     align-items: center;
     justify-content: center;
     font-size: 1.8rem;
     margin-bottom: 0.8rem;
-    box-shadow: 0 0 0 4px #dcfce7, 0 0 0 8px #f1fdf4; /* double ring to match image */
+    box-shadow: 0 0 0 4px rgba(32, 65, 49, 0.15), 0 0 0 8px rgba(32, 65, 49, 0.05); /* double ring to match image */
   }
 
   .panel-title-large {
     font-size: 1.6rem;
     font-weight: 700;
-    color: #16a34a; /* very dark text */
+    color: #204131; /* very dark text */
     margin: 0;
   }
 }
@@ -268,7 +268,7 @@ select.form-control { appearance: none; cursor: pointer; }
     .r-label {
       font-size: 0.95rem;
       font-weight: 700;
-      color: #16a34a; /* dark indigo text */
+      color: #204131; /* dark indigo text */
       margin-bottom: 0.8rem;
     }
 
@@ -287,7 +287,7 @@ select.form-control { appearance: none; cursor: pointer; }
         flex-direction: column;
         
         strong {
-          color: #16a34a;
+          color: #204131;
           font-weight: 700;
           margin-bottom: 0.2rem;
         }
@@ -339,19 +339,19 @@ select.form-control { appearance: none; cursor: pointer; }
 
     .edit-btn {
       background: #fdfdfd;
-      border: 1px solid #16a34a;
-      color: #16a34a;
+      border: 1px solid #204131;
+      color: #204131;
       &:hover {
-        background: #f0fdf4; /* green-50 */
+        background: rgba(32, 65, 49, 0.05); /* green-50 */
       }
     }
 
     .start-export-btn {
-      background: #16a34a; /* green-600 */
+      background: #204131; /* green-600 */
       border: none;
       color: white;
       &:hover:not(:disabled) {
-        background: #15803d; /* green-700 */
+        background: #162d22; /* green-700 */
       }
       &:disabled {
         opacity: 0.6;

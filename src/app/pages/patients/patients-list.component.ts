@@ -20,7 +20,7 @@ import { RouterLink, ActivatedRoute } from '@angular/router';
         
         <div class="search-controls">
           <div class="search-input-box">
-             <input type="text" placeholder="Nom, Prénom, ID, Consultation...">
+             <input type="text" placeholder="Nom, Prénom, ID, Consultation..." (input)="onSearch($event)">
              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
           </div>
           <button class="btn-search">Rechercher</button>
@@ -497,7 +497,8 @@ export class PatientsListComponent implements OnInit {
       }
       
       // Limiter l'affichage à 5 patients maximum
-      this.patients = filtered.slice(0, 5);
+      this.baseFilteredPatients = filtered;
+      this.applySearch();
     });
   }
 
@@ -516,6 +517,35 @@ export class PatientsListComponent implements OnInit {
     return "vignette-other-study";
   }
   showFilters = false;
+  searchQuery = '';
+  baseFilteredPatients: any[] = [];
+
+  onSearch(event: any) {
+    this.searchQuery = event.target.value.toLowerCase();
+    this.applySearch();
+  }
+
+  applySearch() {
+    let filtered = this.baseFilteredPatients.length ? this.baseFilteredPatients : this.allPatients;
+    if (this.searchQuery) {
+      filtered = filtered.filter(p => {
+         const search = this.searchQuery.replace(/\s+/g, ' ').trim();
+         const terms = search.split(' ');
+         
+         const nom = p.nom.toLowerCase();
+         const prenom = p.prenom.toLowerCase();
+         // Cherche "Nom Prenom" ou "Prenom Nom"
+         const fullA = nom + ' ' + prenom;
+         const fullB = prenom + ' ' + nom;
+         
+         return fullA.includes(search) || fullB.includes(search) || (terms.every(t => nom.includes(t) || prenom.includes(t)));
+      });
+    }
+    // Ne pas limiter l'affichage si une recherche est effectuée ou limiter à plus grand si besoin
+    // Mais gardons 5 par défaut, limitons juste à la recherche
+    this.patients = filtered.slice(0, 5);
+  }
+
 
   toggleFilters() {
     this.showFilters = !this.showFilters;

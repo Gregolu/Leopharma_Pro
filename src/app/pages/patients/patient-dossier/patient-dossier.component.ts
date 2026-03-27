@@ -206,18 +206,18 @@ export class PatientDossierComponent implements OnInit {
 
   // ==== DONNÉES SPÉCIFIQUES POUR "État de santé général de votre main" ====
   q1Data: any = {
-    q1: null,
+    q1_lesions: null,
     q2_locations: [],
-    q2_main: null,
-    q3: null,
-    q4: null,
-    q5: null,
+    q2_side: [],
+    q3_handed: null,
+    q4_other_body: null,
+    q5_duration: null,
     q6_date: '',
-    q7_stepper: 0,
-    q8: null,
-    q9: null,
-    q10: null,
-    q11: []
+    q7_poussees: 0,
+    q8_duree: null,
+    q9_pieds: null,
+    q10_apparition: null,
+    q11_circonstances: []
   };
 
   setQ1Data(field: string, value: any) {
@@ -233,11 +233,11 @@ export class PatientDossierComponent implements OnInit {
     else arr.push(value);
   }
 
-  changeStepper(delta: number) {
+  changeStepper(field: string, delta: number) {
     if (!this.isEditMode) return;
-    let n = this.q1Data.q7_stepper + delta;
+    let n = (this.q1Data[field] || 0) + delta;
     if (n < 0) n = 0;
-    this.q1Data.q7_stepper = n;
+    this.q1Data[field] = n;
   }
 }
 

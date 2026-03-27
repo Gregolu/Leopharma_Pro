@@ -715,23 +715,167 @@ $dark-bar: var(--primary);
 }
 
 /* ======================== CUSTOM Q1 UI ======================== */
-.ui-card-btn { display: flex; flex-direction: column; align-items: center; justify-content: center; border: 1px solid var(--border); border-radius: 12px; padding: 24px 16px; background: white; cursor: pointer; transition: all 0.2s ease; color: var(--text-secondary); }
-.ui-card-btn:hover:not(.disabled) { border-color: var(--primary); background: #f8fafc; }
-.ui-card-btn.selected { border-color: var(--primary); background: #f0fdf4; color: var(--primary); box-shadow: 0 4px 12px rgba(16, 185, 129, 0.1); }
+
+
+.custom-card-block {
+    background: #ffffff;
+    padding: 24px;
+    border-radius: 16px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+    margin-bottom: 20px;
+}
+
+.custom-card-title {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #111827;
+    margin-top: 0;
+    margin-bottom: 20px;
+}
+
+/* Big Grid Buttons (Oui / Non, Droitier / Gaucher) */
+.ui-card-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: #f9fafb;
+    border: 1px solid transparent;
+    border-radius: 12px;
+    padding: 24px 16px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    color: #374151;
+    font-weight: 500;
+}
+.ui-card-btn i {
+    font-size: 1.8rem;
+    margin-bottom: 12px;
+    color: #6b7280;
+    font-weight: 300; /* For thinner icons if using pro fonts, fallback for solid */
+}
+.ui-card-btn:hover:not(.disabled) {
+    background: #f3f4f6;
+}
+.ui-card-btn.selected {
+    border-color: var(--primary, #1a5632);
+    background: rgba(46, 125, 50, 0.05); /* very light green */
+    color: #000; /* or var(--primary) but screenshot has dark text */
+}
+.ui-card-btn.selected i {
+    color: var(--primary, #1a5632);
+}
 .ui-card-btn.disabled { opacity: 0.5; cursor: default; }
 
-.ui-selection-row { display: flex; align-items: center; border: 1px solid var(--border); border-radius: 8px; padding: 14px 16px; background: white; cursor: pointer; transition: all 0.2s; color: var(--text-primary); }
-.ui-selection-row:hover:not(.disabled) { border-color: var(--primary); background: #f8fafc; }
-.ui-selection-row.selected { border-color: var(--primary); background: #f0fdf4; color: var(--primary); }
-.ui-selection-row.disabled { opacity: 0.5; cursor: default; }
+/* List Row Options (Q5, Q8, etc.) */
+.ui-list-row {
+    display: flex;
+    align-items: center;
+    background: #f9fafb;
+    border: 1px solid #f3f4f6; /* soft border instead of transparent for differentiation in screenshot */
+    border-radius: 12px;
+    padding: 16px;
+    margin-bottom: 12px;
+    cursor: pointer;
+    transition: all 0.2s;
+    color: #374151;
+    font-weight: 500;
+}
+.ui-list-row:last-child { margin-bottom: 0; }
+.ui-list-row i {
+    margin-right: 12px;
+    font-size: 1.3rem;
+    color: #6b7280;
+}
+.ui-list-row:hover:not(.disabled) {
+    background: #f3f4f6;
+}
+.ui-list-row.selected {
+    border-color: var(--primary, #1a5632);
+    background: rgba(46, 125, 50, 0.08); /* light green matching screenshot */
+}
+.ui-list-row.selected i {
+    color: #000;
+}
+.ui-list-row.disabled { opacity: 0.5; cursor: default; }
 
-.ui-card-small { text-align: center; border: 1px solid var(--border); border-radius: 8px; padding: 12px; background: white; cursor: pointer; transition: all 0.2s; color: var(--text-primary); height: 100%; box-sizing: border-box; display: flex; align-items: center; justify-content: center;}
-.ui-card-small.selected { border-color: var(--primary); background: #f0fdf4; color: var(--primary); }
-.ui-card-small.disabled { opacity: 0.5; cursor: default; }
+/* 2 Column Grid Rows (Q11 Circonstances) */
+.ui-grid-rows {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+}
+.ui-grid-rows .ui-list-row {
+    margin-bottom: 0;
+}
 
-.ui-stepper-btn { background: white; border: 1px solid var(--border); border-radius: 50%; width: 48px; height: 48px; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 1.2rem; color: var(--text-primary); transition: all 0.2s; }
-.ui-stepper-btn:hover:not([disabled]) { border-color: var(--primary); color: var(--primary); background: #f8fafc;}
+/* Stepper (Q7) */
+.ui-stepper-wrap {
+    background: #f9fafb;
+    border-radius: 30px;
+    padding: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 32px;
+}
+.ui-stepper-btn {
+    background: white;
+    border: none;
+    border-radius: 50%;
+    width: 48px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 1.5rem;
+    color: #111827;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05); /* very soft shadow */
+    transition: all 0.2s;
+}
+.ui-stepper-btn:hover:not([disabled]) { box-shadow: 0 4px 8px rgba(0,0,0,0.08); }
 .ui-stepper-btn[disabled] { opacity: 0.4; cursor: default; }
 
-@keyframes fadeIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
-.custom-card-block { box-shadow: 0 2px 10px rgba(0,0,0,0.02); }
+.ui-stepper-val {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #111827;
+    min-width: 40px;
+    text-align: center;
+}
+
+/* Date input */
+.ui-date-input {
+    width: 100%;
+    padding: 16px;
+    background: white;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    font-size: 1rem;
+    color: #111827;
+    font-family: inherit;
+    outline: none;
+    transition: border-color 0.2s;
+}
+.ui-date-input:focus {
+    border-color: var(--primary, #1a5632);
+}
+
+.save-btn-bottom {
+    display: block;
+    width: 100%;
+    background: var(--primary, #1a5632);
+    color: white;
+    font-size: 1.1rem;
+    font-weight: 600;
+    text-align: center;
+    padding: 18px;
+    border-radius: 30px; /* Big pill shape */
+    border: none;
+    cursor: pointer;
+    margin-top: 32px;
+}
+.save-btn-bottom:hover {
+    background: var(--primary-light, #236c40);
+}

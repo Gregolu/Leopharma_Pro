@@ -43,7 +43,7 @@ import { CommonModule } from '@angular/common';
             <h3>Courbes d'inclusion</h3>
             <button class="btn-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="1"></circle><circle cx="12" cy="5" r="1"></circle><circle cx="12" cy="19" r="1"></circle></svg></button>
           </div>
-          <div class="chart-area" style="height: 250px;">
+          <div class="chart-area" style="height: 350px;">
             <svg viewBox="0 0 500 200" class="line-chart">
               <path class="line line-target" d="M 0 180 L 100 150 L 200 120 L 300 90 L 400 60 L 500 30" />
               <path class="line line-actual" d="M 0 180 L 100 160 L 200 100 L 300 80 L 400 75 L 500 50" />
@@ -291,7 +291,7 @@ import { CommonModule } from '@angular/common';
       display: flex;
       align-items: center;
       gap: 24px;
-      height: 250px;
+      height: 350px;
     }
     .pie-chart {
       width: 160px;
@@ -310,7 +310,7 @@ import { CommonModule } from '@angular/common';
       display: flex;
       align-items: flex-end;
       justify-content: space-around;
-      height: 300px;
+      height: 350px;
       padding-top: 40px;
     }
     .bar-group {
