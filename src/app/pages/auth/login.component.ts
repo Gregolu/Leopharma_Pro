@@ -54,7 +54,7 @@ import { RouterLink } from '@angular/router';
           
           <p>L'expertise médicale dermatologique au service de vos patients.</p>
         </div>
-        <img src="/images/hand-dashboard-visual.png" class="dashboard-visual" alt="Visuel Dashboard">
+        <img src="/images/hand-auth.png" class="auth-visual" alt="Visuel Auth">
       </div>
     </div>
   `,
@@ -197,20 +197,20 @@ import { RouterLink } from '@angular/router';
       margin-bottom: 16px;
     }
     .right-content p {
-      font-size: 18px;
-      color: rgba(255,255,255,0.8);
-      line-height: 1.5;
+      font-size: 28px;
+      font-weight: 700;
+      color: rgba(255,255,255,0.9);
+      line-height: 1.4;
     }
-    .dashboard-visual {
+    .auth-visual {
       position: absolute;
-      top: 50%;
+      bottom: 0;
       left: 50%;
-      transform: translate(-50%, -50%);
+      transform: translateX(-50%);
       width: 70%;
       max-width: 500px;
       height: auto;
       object-fit: contain;
-      opacity: 0.1;
       pointer-events: none;
     }
 

@@ -12,44 +12,46 @@ import { FormsModule } from '@angular/forms';
 export class PatientDossierComponent implements OnInit {
   isEditMode: boolean = false;
   activeQuestionnaireId: string = 'q1';
-  activeQuestionnaireName: string = 'Analyse des mains';
+  activeQuestionnaireName: string = 'Etat de santé générale de votre main';
   activeInstanceId: string = 'inst1';
   currentProgressIndicator: number = 75;
 
   categories: any[] = [
     {
       id: 'c1',
-      name: 'Analyse',
+      name: 'Etat de la main',
       expanded: true,
       questionnaires: [
-        { id: 'q1', name: 'Analyse des mains', status: 'completed', type: 'pro' },
-        { id: 'q2', name: 'Scan produits', status: 'completed', type: 'mixed' },
+        { id: 'q1', name: 'Etat de santé générale de votre main', status: 'completed', type: 'pro' },
+        { id: 'q2', name: 'Analyse détaillée des symptômes', status: 'incomplete', type: 'pro' },
       ],
     },
     {
       id: 'c2',
-      name: 'Qualité de vie',
+      name: 'Antécédents et traitements',
       expanded: true,
       questionnaires: [
-        { id: 'q3', name: 'Votre qualité de vie', status: 'incomplete', type: 'patient' },
+        { id: 'q3', name: 'Antécédents médicaux', status: 'completed', type: 'patient' },
+        { id: 'q4', name: 'Traitements', status: 'completed', type: 'patient' },
+        { id: 'q5', name: 'Antécédents familiaux', status: 'incomplete', type: 'patient' },
       ],
     },
     {
       id: 'c3',
-      name: 'Analyse détaillée (IGA-ACHE)',
+      name: 'Contexte de vie',
       expanded: true,
       questionnaires: [
-        { id: 'q4', name: 'Analyse détaillée des rougeurs', status: 'incomplete', type: 'pro' },
-        { id: 'q5', name: 'Analyse détaillée peau qui pèle', status: 'completed', type: 'pro' },
-        { id: 'q6', name: 'Analyse détaillée peau épaissie', status: 'completed', type: 'pro' },
+        { id: 'q6', name: 'Profession et cadre de vie', status: 'completed', type: 'patient' },
+        { id: 'q7', name: 'Exposition et facteurs aggravants', status: 'completed', type: 'patient' },
       ],
     },
     {
       id: 'c4',
-      name: 'État de santé',
+      name: 'Qualité de vie',
       expanded: true,
       questionnaires: [
-        { id: 'q7', name: 'État de santé général', status: 'completed', type: 'patient' },
+        { id: 'q8', name: 'Impact fonctionnel des mains', status: 'incomplete', type: 'patient' },
+        { id: 'q9', name: 'Votre qualité de vie (dont stigmatisation)', status: 'incomplete', type: 'patient' },
       ],
     },
   ];

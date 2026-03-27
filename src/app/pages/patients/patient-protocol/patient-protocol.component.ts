@@ -11,6 +11,20 @@ import { FormsModule } from '@angular/forms';
   styleUrls: ['./patient-protocol.component.scss']
 })
 export class PatientProtocolComponent {
+  getVignetteClass(name: string): string {
+    const n = name.toLowerCase();
+    if (n.includes("sévère")) return "vignette-severe";
+    if (n.includes("modéré")) return "vignette-modere";
+    if (n.includes("alpha") || n.includes("trial a")) return "vignette-trial-a";
+    if (n.includes("beta")) return "vignette-beta";
+    if (n.includes("ecp-4")) return "vignette-ecp4";
+    if (n.includes("eczemalife")) return "vignette-eczemalife";
+    if (n.includes("elaris")) return "vignette-elaris";
+    if (n.includes("exogen")) return "vignette-exogen";
+    if (n.includes("aucun") || n.includes("non diagn")) return "vignette-none";
+    return "vignette-other-study";
+  }
+
   activeSubTab = signal<'therapeutique' | 'clinique'>('therapeutique');
 
   // TAB 1: SUIVI THÉRAPEUTIQUE
@@ -25,35 +39,36 @@ export class PatientProtocolComponent {
 
   questionnaireCategories: any[] = [
     {
-      name: 'Analyse',
+      name: 'Etat de la main',
       items: [
-        { id: 'q1', name: 'Analyse des mains', checked: true, frequency: '6 mois', hasChanged: false },
-        { id: 'q2', name: 'Scan produit', checked: true, frequency: '12 mois', hasChanged: true, oldValue: '6 mois' }
+        { id: 'q1', name: 'Etat de santé générale de votre main', checked: true, frequency: '6 mois', hasChanged: false },
+        { id: 'q2', name: 'Analyse détaillée des symptômes', checked: true, frequency: '12 mois', hasChanged: true, oldValue: '6 mois' }
+      ]
+    },
+    {
+      name: 'Antécédents et traitements',
+      items: [
+        { id: 'q3', name: 'Antécédents médicaux', checked: true, frequency: '12 mois', hasChanged: false },
+        { id: 'q4', name: 'Traitements', checked: true, frequency: '12 mois', hasChanged: false },
+        { id: 'q5', name: 'Antécédents familiaux', checked: true, frequency: 'Pas de fréquence', hasChanged: false }
+      ]
+    },
+    {
+      name: 'Contexte de vie',
+      items: [
+        { id: 'q6', name: 'Profession et cadre de vie', checked: false, frequency: 'Pas de fréquence', hasChanged: false },
+        { id: 'q7', name: 'Exposition et facteurs aggravants', checked: false, frequency: 'Pas de fréquence', hasChanged: false }
       ]
     },
     {
       name: 'Qualité de vie',
       items: [
-        { id: 'q3', name: 'Votre qualité de vie', checked: true, frequency: '12 mois', hasChanged: false }
-      ]
-    },
-    {
-      name: 'IGACHE',
-      items: [
-        { id: 'q4a', name: 'Analyse détaillée des rougeurs', checked: true, frequency: '3 mois', hasChanged: false },
-        { id: 'q4b', name: 'Analyse détaillée peau qui pèle', checked: false, frequency: 'Pas de fréquence', hasChanged: false },
-        { id: 'q4c', name: 'Analyse détaillée peau épaissie', checked: false, frequency: 'Pas de fréquence', hasChanged: false }
-      ]
-    },
-    {
-      name: 'État de santé',
-      items: [
-        { id: 'q5', name: 'État de santé général de votre problème', checked: true, frequency: '6 mois', hasChanged: false }
+        { id: 'q8', name: 'Impact fonctionnel des mains', checked: true, frequency: '3 mois', hasChanged: false },
+        { id: 'q9', name: 'Votre qualité de vie (dont stigmatisation)', checked: true, frequency: '6 mois', hasChanged: false }
       ]
     }
   ];
-
-  // HISTORY MODAL (TAB 1)
+// HISTORY MODAL (TAB 1)
   showHistoryModal = signal(false);
   selectedHistory = signal<any>(null);
 
@@ -90,8 +105,8 @@ export class PatientProtocolComponent {
       gdpr: {infoReceived: false, canStop: false, consents: false}
     },
     { 
-      id: 'cs5', name: 'Elaris EM-1', active: false, status: 'not-eligible',
-      state: 'not-eligible', color: '#ef4444',
+      id: 'cs5', name: 'Elaris EM-1', active: false, status: 'in-progress',
+      state: 'in-progress', color: '#3b82f6',
       answers: {q1: true, q2: false, q3: null, q4: null},
       gdpr: {infoReceived: false, canStop: false, consents: false}
     }
@@ -105,35 +120,7 @@ export class PatientProtocolComponent {
     { label: '24 mois', past: false }
   ];
 
-  timelineData = [
-    {
-      category: 'Analyse',
-      items: [
-        { name: 'Analyse des mains', states: ['completed', 'completed', 'todo', 'todo', 'todo'] },
-        { name: 'Scan produit', states: ['completed', 'na', 'todo', 'todo', 'todo'] }
-      ]
-    },
-    {
-      category: 'Qualité de vie',
-      items: [
-        { name: 'Votre qualité de vie', states: ['completed', 'completed', 'todo', 'todo', 'todo'] }
-      ]
-    },
-    {
-      category: 'IGACHE',
-      items: [
-        { name: 'Analyse détaillée des rougeurs', states: ['na', 'na', 'todo', 'na', 'na'] },
-        { name: 'Analyse détaillée peau qui pèle', states: ['na', 'na', 'na', 'na', 'na'] },
-        { name: 'Analyse détaillée peau épaissie', states: ['na', 'na', 'na', 'na', 'na'] }
-      ]
-    },
-    {
-      category: 'État de santé',
-      items: [
-        { name: 'État de santé général de votre problème', states: ['completed', 'completed', 'todo', 'todo', 'todo'] }
-      ]
-    }
-  ];
+  timelineData = [{category: "Etat de la main", items: [{ name: "Etat de santé générale de votre main", states: ["completed", "completed", "todo", "todo", "todo"] }, { name: "Analyse détaillée des symptômes", states: ["completed", "na", "todo", "todo", "todo"] }]},{category: "Antécédents et traitements", items: [{ name: "Antécédents médicaux", states: ["na", "na", "todo", "na", "na"] }, { name: "Traitements", states: ["na", "na", "na", "na", "na"] }, { name: "Antécédents familiaux", states: ["na", "na", "na", "na", "na"] }]},{category: "Contexte de vie", items: [{ name: "Profession et cadre de vie", states: ["completed", "completed", "todo", "todo", "todo"] }, { name: "Exposition et facteurs aggravants", states: ["na", "na", "todo", "todo", "todo"] }]},{category: "Qualité de vie", items: [{ name: "Impact fonctionnel des mains", states: ["completed", "completed", "todo", "todo", "todo"] }, { name: "Votre qualité de vie (dont stigmatisation)", states: ["completed", "completed", "todo", "todo", "todo"] }]}];
 
   // LOGIQUE POP-IN ETUDES CLINIQUES
   isStudyModalOpen = signal(false);
@@ -183,7 +170,7 @@ export class PatientProtocolComponent {
     if(this.isEligible()) {
       s.state = 'eligible-not-sent'; s.status = 'eligible'; s.color = '#3b82f6';
     } else if(this.isNotEligible()) {
-      s.state = 'not-eligible'; s.status = 'not-eligible'; s.color = '#ef4444';
+      s.state = 'in-progress'; s.status = 'in-progress'; s.color = '#3b82f6';
     }
     this.closeStudyModal();
   }

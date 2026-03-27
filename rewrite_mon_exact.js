@@ -1,0 +1,166 @@
+const fs = require('fs');
+
+const monitoringHtml = `
+<div class="page-container page-monitoring" style="padding: 24px; max-width: 1400px; margin: 0 auto; background: #f8fafc; min-height: 100vh;">
+  <!-- HEADER -->
+  <div class="header-actions" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
+    <h1 style="margin: 0; color: #1e293b; font-size: 1.5rem; font-weight: 700;">Monitoring du patient</h1>
+    <button class="btn-secondary" (click)="downloadDossier()" style="background: white; border: 1px solid #cbd5e1; padding: 8px 16px; border-radius: 8px; font-weight: 600; color: #1e293b; display: flex; align-items: center; gap: 8px; cursor: pointer; box-shadow: 0 1px 2px rgba(0,0,0,0.05);">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+        Télécharger le dossier patient
+    </button>
+  </div>
+
+  <!-- GRAPH GRID -->
+  <div class="charts-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
+    
+    <!-- Graphe 1: IGA-CHE -->
+    <div class="chart-wrapper">
+        <div class="chart-block" style="background: white; border-radius: 12px; padding: 24px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); height: 100%; display: flex; flex-direction: column;">
+            <div class="c-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
+                <div class="header-left-title">
+                    <h3 style="margin: 0; font-size: 1rem; font-weight: 700; color: #1e293b;">Evolution des symptômes (IGA-CHE)</h3>
+                </div>
+                <div class="actions-right" style="display: flex; gap: 8px; align-items: center;">
+                    <div class="c-badge" style="background: #e6f7f2; color: #059669; padding: 4px 8px; border-radius: 12px; font-size: 0.75rem; font-weight: 700;">1</div>
+                    <i class="fas fa-cog" style="color: #10b981; cursor: pointer;"></i>
+                </div>
+            </div>
+            <div class="c-graph-layout" style="flex: 1; display: flex; gap: 16px;">
+                <div class="y-axis" style="display: flex; flex-direction: column; justify-content: space-between; color: #64748b; font-size: 0.75rem; padding-bottom: 24px; text-align: right;">
+                    <span>4</span>
+                    <span>2</span>
+                    <span>0</span>
+                </div>
+                <div class="c-graph-main" style="flex: 1; position: relative;">
+                <div class="c-wrap" style="height: 180px; position: relative;">
+                    <svg viewBox="0 0 300 100" class="c-svg" preserveAspectRatio="none" style="width: 100%; height: 100%;">                                                                                               
+                        <!-- Graph line -->
+                        <polyline points="40,40 100,47 180,80 260,86" fill="none" stroke="#1e293b" stroke-width="1.5"/>                                                                  
+                        <circle cx="40" cy="40" r="4" fill="#ff5a5f"/>
+                        <circle cx="100" cy="47" r="4" fill="#ff5a5f"/>
+                        <circle cx="180" cy="80" r="4" fill="#1e3a29"/>
+                        <circle cx="260" cy="86" r="4" fill="#1e3a29"/>
+                    </svg>
+                    <!-- Moyenne ligne -->
+                    <div class="mean-line-container" style="position: absolute; top: 50%; left: 0; right: 0; display: flex; align-items: center;">
+                        <div class="mean-line" style="flex: 1; border-top: 1px dashed #cbd5e1;"></div>
+                        <span class="mean-label" style="font-size: 0.7rem; color: #64748b; margin-left: 8px;">— Moy.</span>
+                    </div>
+                </div>
+                <div class="x-axis" style="display: flex; justify-content: space-between; color: #64748b; font-size: 0.75rem; margin-top: 8px;">
+                    <span>01.02.25</span>
+                    <span>30.02.25</span>
+                </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Graphe 2: Suivi des traitements (from old orig_mon) -->
+    <div class="chart-wrapper">
+        <div class="chart-block" style="background: white; border-radius: 12px; padding: 24px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); height: 100%; display: flex; flex-direction: column;">
+            <div class="c-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">                                                        
+                <div class="header-left-title">
+                    <h3 style="margin: 0; font-size: 1rem; font-weight: 700; color: #1e293b;">Suivi des traitements</h3>
+                </div>
+                <div class="actions-right" style="display: flex; gap: 8px; align-items: center;">
+                    <i class="fas fa-cog" style="color: #10b981; cursor: pointer;"></i>
+                </div>
+            </div>
+            
+            <div class="chart-legend" style="display: flex; gap: 16px; font-size: 0.8rem; font-weight: 600; color: #475569; margin-bottom: 16px;">                           
+                <div style="display: flex; align-items: center; gap: 6px;">                                                                             
+                    <div style="width: 10px; height: 10px; border-radius: 50%; background: #71c671;"></div> Crèmes hydratantes                            
+                </div>
+                <div style="display: flex; align-items: center; gap: 6px;">
+                    <div style="width: 10px; height: 10px; border-radius: 50%; background: #eab365;"></div> Hydrocortisone                                                        
+                </div>
+            </div>
+
+            <div class="c-graph-layout" style="flex: 1; display: flex; gap: 16px;">
+                <div class="y-axis" style="display: flex; flex-direction: column; justify-content: space-between; color: #64748b; font-size: 0.75rem; text-align: right;">
+                    <span>10</span>
+                    <span>5</span>
+                    <span>0</span>
+                </div>
+                <div class="c-graph-main" style="flex: 1; position: relative;">
+                    <div class="c-wrap" style="height: 180px; position: relative;">
+                        <!-- Adjusted the background grid to map to image -->
+                        <div style="position: absolute; top: 50%; left: 0; right: 0; border-top: 1px dotted #fb7185; z-index: 1;"></div>
+                        <svg viewBox="0 0 300 100" class="c-svg" preserveAspectRatio="none" style="width: 100%; height: 100%; position: relative; z-index: 2;">                                                                                               
+                            <!-- Bar 1 -->
+                            <rect x="50" y="20" width="16" height="40" fill="#71c671" rx="8" />
+                            <rect x="50" y="50" width="16" height="36" fill="#eab365" rx="8" />
+                            <ellipse cx="58" cy="92" rx="10" ry="2" fill="#e2e8f0" />
+                            
+                            <!-- Bar 2 -->
+                            <rect x="120" y="40" width="16" height="30" fill="#71c671" rx="8" />
+                            <rect x="120" y="55" width="16" height="31" fill="#eab365" rx="8" />
+                            <ellipse cx="128" cy="92" rx="10" ry="2" fill="#e2e8f0" />
+
+                            <!-- Bar 3 -->
+                            <rect x="190" y="35" width="16" height="30" fill="#71c671" rx="8" />
+                            <rect x="190" y="45" width="16" height="41" fill="#eab365" rx="8" />
+                            <ellipse cx="198" cy="92" rx="10" ry="2" fill="#e2e8f0" />
+
+                            <!-- Bar 4 (small) -->
+                            <rect x="250" y="65" width="16" height="15" fill="#71c671" rx="8" />
+                            <rect x="250" y="75" width="16" height="11" fill="#eab365" rx="8" />
+                            <ellipse cx="258" cy="92" rx="10" ry="2" fill="#e2e8f0" />
+                        </svg>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Graphe 3: BoHG -->
+    <div class="chart-wrapper">
+        <div class="chart-block" style="background: white; border-radius: 12px; padding: 24px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); height: 100%; display: flex; flex-direction: column;">
+            <div class="c-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
+                <div class="header-left-title" style="display: flex; gap: 12px; align-items: center;">
+                    <h3 style="margin: 0; font-size: 1rem; font-weight: 700; color: #64748b;">Evolution de la qualité de vie (BoHG)</h3>
+                </div>
+                <div class="actions-right" style="display: flex; gap: 8px; align-items: center;">
+                    <div class="c-badge" style="background: #f1f5f9; color: #64748b; padding: 4px 8px; border-radius: 12px; font-size: 0.75rem; font-weight: 700;">14</div>
+                    <i class="fas fa-cog" style="color: #94a3b8; cursor: pointer;"></i>
+                </div>
+            </div>
+            <div class="c-graph-layout" style="flex: 1; display: flex; gap: 16px;">
+                <div class="y-axis" style="display: flex; flex-direction: column; justify-content: space-between; color: #94a3b8; font-size: 0.75rem; padding-bottom: 24px; text-align: right;">
+                    <span>48</span>
+                    <span>24</span>
+                    <span>0</span>
+                </div>
+                <div class="c-graph-main" style="flex: 1; position: relative;">
+                <div class="c-wrap" style="height: 180px; position: relative;">
+                    <svg viewBox="0 0 300 100" class="c-svg" preserveAspectRatio="none" style="width: 100%; height: 100%; opacity: 0.6;">                                                                                               
+                        <!-- Graph line disabled -->
+                        <polyline points="40,35 100,42 180,82 260,85" fill="none" stroke="#64748b" stroke-width="1.5"/>                                                                  
+                        <circle cx="40" cy="35" r="4" fill="#94a3b8"/>
+                        <circle cx="100" cy="42" r="4" fill="#94a3b8"/>
+                        <circle cx="180" cy="82" r="4" fill="#64748b"/>
+                        <circle cx="260" cy="85" r="4" fill="#64748b"/>
+                    </svg>
+                    <!-- Moyenne ligne -->
+                    <div class="mean-line-container" style="position: absolute; top: 50%; left: 0; right: 0; display: flex; align-items: center;">
+                        <div class="mean-line" style="flex: 1; border-top: 1px dashed #cbd5e1;"></div>
+                        <span class="mean-label" style="font-size: 0.7rem; color: #64748b; margin-left: 8px;">— Moy.</span>
+                    </div>
+                </div>
+                <div class="x-axis" style="display: flex; justify-content: space-between; color: #94a3b8; font-size: 0.75rem; margin-top: 8px;">
+                    <span>01.02.25</span>
+                    <span>30.02.25</span>
+                </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+  </div> <!-- /GRAPH GRID -->
+</div>
+`;
+
+fs.writeFileSync('src/app/pages/patients/patient-monitoring/patient-monitoring.html', monitoringHtml);
+console.log('Monitoring matching exactly user requested visual layout without alerts written.');

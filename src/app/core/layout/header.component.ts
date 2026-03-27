@@ -26,17 +26,23 @@ import { RouterLink, RouterLinkActive } from '@angular/router';
             <div class="header-dropdown">
               <a routerLink="/analyse">Analyse</a>
               <a routerLink="/data-verification">Vérifications des data</a>
-              <a routerLink="/exportation">Exportation</a>
+              <a routerLink="/exportation">Export</a>
             </div>
           </div>
-          <a routerLink="/reseau" routerLinkActive="active" class="nav-item">Réseau partenaires</a>
         </nav>
       </div>
 
       <div class="header-right">
-        <div class="select-box">
-          Bordeaux Sud
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"></path></svg>
+        <div class="hospital-selector-container">
+          <div class="select-box" (click)="toggleHospitalMenu()">
+            {{ selectedHospital }}
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"></path></svg>
+          </div>
+          <div class="hospital-dropdown" *ngIf="isHospitalMenuOpen">
+            <div class="hospital-item" *ngFor="let hopital of hospitals" (click)="selectHospital(hopital)">
+              {{ hopital }}
+            </div>
+          </div>
         </div>
         
         <div class="notification">
@@ -80,6 +86,8 @@ import { RouterLink, RouterLinkActive } from '@angular/router';
       padding: 0 40px;
       color: white;
       font-family: inherit;
+      position: relative;
+      z-index: 1000;
     }
     .header-left { display: flex; align-items: center; gap: 40px; }
     .logo { height: 32px; width: auto; margin: 0; }
@@ -149,7 +157,10 @@ import { RouterLink, RouterLinkActive } from '@angular/router';
       color: #204131;
     }
     
-    .header-right { display: flex; align-items: center; gap: 20px; }
+    .header-right { display: flex; align-items: center; gap: 20px; position: relative; }
+    .hospital-selector-container {
+      position: relative;
+    }
     .select-box {
       background: white;
       color: #1a2233;
@@ -160,6 +171,31 @@ import { RouterLink, RouterLinkActive } from '@angular/router';
       display: flex;
       align-items: center;
       gap: 8px;
+      cursor: pointer;
+    }
+    .hospital-dropdown {
+      position: absolute;
+      top: 45px;
+      right: 0;
+      width: 200px;
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+      border: 1px solid #eee;
+      color: #333;
+      z-index: 300;
+      overflow: hidden;
+    }
+    .hospital-item {
+      padding: 12px 16px;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 500;
+      transition: background 0.2s;
+    }
+    .hospital-item:hover {
+      background-color: #f3f4f6;
+      color: #204131;
     }
     .notification { position: relative; margin: 0 10px; cursor: pointer; }
     .dot {
@@ -245,8 +281,22 @@ import { RouterLink, RouterLinkActive } from '@angular/router';
 })
 export class HeaderComponent {
   isMenuOpen = false;
+  isHospitalMenuOpen = false;
+  hospitals = ['Bordeaux Sud', 'CHU de Toulouse', 'Hôpital Saint-André', 'Polyclinique Bordeaux Nord'];
+  selectedHospital = 'Bordeaux Sud';
 
   toggleMenu() {
     this.isMenuOpen = !this.isMenuOpen;
+    if (this.isMenuOpen) this.isHospitalMenuOpen = false;
+  }
+
+  toggleHospitalMenu() {
+    this.isHospitalMenuOpen = !this.isHospitalMenuOpen;
+    if (this.isHospitalMenuOpen) this.isMenuOpen = false;
+  }
+
+  selectHospital(hopital: string) {
+    this.selectedHospital = hopital;
+    this.isHospitalMenuOpen = false;
   }
 }

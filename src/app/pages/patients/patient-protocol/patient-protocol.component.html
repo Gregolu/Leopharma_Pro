@@ -4,11 +4,11 @@
   <div class="protocol-tabs">
     <button class="nav-tab" [class.active]="activeSubTab() === 'therapeutique'" (click)="activeSubTab.set('therapeutique')">
       <h4>Suivi thérapeutique</h4>
-      <p>Suivi actif : <span class="active-badge" style="display:inline-flex; align-items:center;"><div class="color-pastille pastille-severe" style="margin-right:6px;"></div>Eczéma sévère</span></p>
+      <p>Suivi actif : <span class="active-badge" style="display:inline-flex; align-items:center;"><div class="vignette-triangle vignette-severe" style="margin-right:6px;"></div>Eczéma sévère</span></p>
     </button>
     <button class="nav-tab" [class.active]="activeSubTab() === 'clinique'" (click)="activeSubTab.set('clinique')">
       <h4>Suivi d'étude clinique</h4>
-      <p>Étude active : <span class="active-badge" style="display:inline-flex; align-items:center;"><div class="color-pastille pastille-trial-a" style="margin-right:6px;"></div>EczemaLife</span></p>
+      <p>Étude active : <span class="active-badge" style="display:inline-flex; align-items:center;"><div class="vignette-triangle vignette-eczemalife" style="margin-right:6px;"></div>EczemaLife</span></p>
     </button>
   </div>
 
@@ -25,9 +25,7 @@
           
           <div class="card-content">
             <span class="f-name" [class.danger]="s.isNone" [style.color]="s.active ? 'white' : ''">
-              <i *ngIf="s.active && !s.isNone" class="fas fa-play" style="color: white; font-size: 10px; margin-right: 6px;"></i>
-              <i *ngIf="s.isNone" class="fas fa-times" [style.color]="s.active ? 'white' : '#ef4444'" style="margin-right: 6px;"></i>
-              <i *ngIf="!s.active && !s.isNone" class="fas fa-play" style="color: #cbd5e1; font-size: 10px; margin-right: 6px;"></i>
+              <div class="vignette-triangle" [ngClass]="getVignetteClass(s.name)"></div>
               {{ s.name }}
             </span>
           </div>
@@ -60,26 +58,14 @@
           <!-- Lignes questionnaires -->
           <tr class="item-row" *ngFor="let item of cat.items">
             <td class="item-name" [style.padding-left.px]="item.isSubItem ? 48 : 24" style="text-align: left;">
-              <label class="checkbox-container inline">
-                <input type="checkbox" [(ngModel)]="item.checked">
-                <span class="checkmark"></span>
-              </label>
+              
               {{ item.name }}
             </td>
 
             <td class="state-cell" style="text-align: right; padding-right: 24px;">
               <div style="display: flex; justify-content: flex-end; align-items: center; gap: 12px;">
-                <div class="actions-wrapper" *ngIf="item.hasChanged" style="display: flex; gap: 8px;">
-                  <button class="icon-btn undo" (click)="revertFrequency(item)" title="Annuler" style="background: none; border: none; cursor: pointer; color: #f59e0b;">
-                    <i class="fas fa-undo"></i>
-                  </button>
-                  <button class="icon-btn hist" (click)="openHistory(item)" title="Historique" style="background: none; border: none; cursor: pointer; color: #64748b;">
-                    <i class="fas fa-history"></i>
-                  </button>
-                </div>
-                <select class="freq-select" [(ngModel)]="item.frequency" (change)="onFreqChange(item)" style="padding: 6px 12px; border: 1px solid #cbd5e1; border-radius: 4px; font-size: 13px; color: #334155; background-color: white; min-width: 120px; cursor: pointer;">
-                  <option *ngFor="let f of frequencies" [value]="f">{{ f }}</option>
-                </select>
+                
+                <span style="font-size: 13px; color: #475569; font-weight: 500;">{{ item.frequency }}</span>
               </div>
             </td>
           </tr>
@@ -108,8 +94,8 @@
           <input type="radio" name="studySelection" [checked]="cs.active" (change)="selectStudy(cs)">
           
           <div class="card-content">
-            <span class="f-name" [style.color]="cs.active ? 'white' : (cs.status === 'not-eligible' ? '#ef4444' : '')">
-              <i class="fas fa-play" [style.color]="cs.active ? 'white' : cs.status === 'not-eligible' ? '#ef4444' : '#cbd5e1'" style="font-size: 10px; margin-right: 6px;"></i>
+            <span class="f-name" [style.color]="cs.active ? 'white' : (cs.status === 'in-progress' ? '#3b82f6' : '')">
+              <div class="vignette-triangle" [ngClass]="getVignetteClass(cs.name)"></div>
               {{ cs.name }}
             </span>
           </div>
@@ -119,7 +105,7 @@
             <button class="btn-study-action" *ngIf="cs.status === 'awaiting'" (click)="openStudyAction(cs)">Voir l'avancement</button>
             <button class="btn-study-action" *ngIf="cs.status === 'eligible'" (click)="openStudyAction(cs)">Envoyer le consentement</button>
             <button class="btn-study-action" *ngIf="cs.status === 'check-eligibility'" (click)="openStudyAction(cs)">Vérifier l'éligibilité</button>
-            <button class="btn-study-action" *ngIf="cs.status === 'not-eligible'" (click)="openStudyAction(cs)">Voir plus</button>
+            <button class="btn-study-action" *ngIf="cs.status === 'in-progress'" (click)="openStudyAction(cs)">Voir plus</button>
             <button class="btn-study-action" *ngIf="cs.status === 'active'" (click)="openStudyAction(cs)">Voir l'avancement</button>
           </div>
         </label>
@@ -148,16 +134,12 @@
           <!-- Lignes questionnaires -->
           <tr class="item-row" *ngFor="let item of cat.items">
             <td class="item-name">
-               <label class="checkbox-container inline">
-                 <input type="checkbox" checked disabled>
-                 <span class="checkmark"></span>
-               </label>
                {{ item.name }}
             </td>
             <td class="state-cell" *ngFor="let state of item.states; let i = index" [class.past-bg]="timelineCols[i].past">
                <i class="fas fa-check icon-green" *ngIf="state === 'completed'"></i>
                <i class="fas fa-check icon-blue" *ngIf="state === 'todo'"></i>
-               <i class="fas fa-times icon-red" *ngIf="state === 'missed'"></i>
+               <span *ngIf="state === 'missed'" style="color: #f59e0b; font-size: 0.75rem; font-weight: 600; background: #fffbeb; padding: 2px 6px; border-radius: 4px; border: 1px solid #fcd34d;">En cours</span>
             </td>
           </tr>
         </tbody>

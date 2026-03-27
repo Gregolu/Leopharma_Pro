@@ -3,7 +3,7 @@
     <!-- HEADER -->
     <div class="sm-header">
       <div class="sm-h-left">
-        <div class="color-pastille" [ngClass]="study?.badgeClass || 'pastille-trial-a'" style="width:16px;height:16px;"></div>
+        <div class="vignette-triangle" [ngClass]="study?.badgeClass || 'vignette-trial-a'" style="width:16px;height:16px;"></div>
         <h3 style="margin: 0; font-size: 1.25rem;">{{ study?.name || 'Étude Clinique' }}</h3>
       </div>
       <button class="close-btn" (click)="closeModal()" style="background:transparent;border:none;font-size:1.5rem;cursor:pointer;">&times;</button>
@@ -50,41 +50,80 @@
         </div>
       </div>
 
-      <!-- SECTION 4: CONSENTEMENT -->
+      <!-- SECTION 4: CONSENTEMENT & RGPD -->
       <div class="sm-section">
-        <h4 style="border-bottom:1px solid var(--border); padding-bottom:8px; margin-bottom:12px;">Consentement Patient</h4>
-        <div class="consent-state" *ngIf="consentStatus === 'Non envoyé'">
-          <div style="color:var(--text-secondary); margin-bottom:12px;">Le formulaire de consentement n'a pas encore été transmis au patient.</div>
-          <button style="background:var(--primary); color:white; border:none; padding:8px 16px; border-radius:6px; cursor:pointer;"><i class="fas fa-paper-plane"></i> Envoyer le consentement</button>
-        </div>
-        
-        <div class="consent-state" *ngIf="consentStatus === 'En attente'">
-          <div style="margin-bottom:12px;">Envoyé le : <strong>Aujourd'hui</strong> <br/><span style="color:#f59e0b;font-size:0.9rem;">En attente de signature numérique</span></div>
-          <button style="background: #f1f5f9; border:1px solid #cbd5e1; padding:8px 16px; border-radius:6px; cursor:pointer;"><i class="fas fa-sync-alt"></i> Relancer / Renvoyer</button>
+        <div style="display: flex; justify-content: space-between; align-items: center; border-bottom:1px solid var(--border); padding-bottom:8px; margin-bottom:12px;">
+          <h4 style="margin: 0;">Consentement Patient</h4>
+          
+          <div *ngIf="consentStatus !== 'Signé'" class="consent-toggle" style="display: flex; background: #f1f5f9; border-radius: 6px; padding: 3px;">
+            <button 
+              style="border: none; padding: 4px 10px; font-size: 0.8rem; border-radius: 4px; cursor: pointer; background: transparent; color: var(--text);"
+              [style.background]="consentMode === 'digital' ? 'white' : 'transparent'"
+              [style.boxShadow]="consentMode === 'digital' ? '0 1px 3px rgba(0,0,0,0.1)' : 'none'"
+              [style.fontWeight]="consentMode === 'digital' ? '600' : '400'"
+              (click)="consentMode = 'digital'">
+              <i class="fas fa-mobile-alt"></i> E-Consentement
+            </button>
+            <button 
+              style="border: none; padding: 4px 10px; font-size: 0.8rem; border-radius: 4px; cursor: pointer; background: transparent; color: var(--text);"
+              [style.background]="consentMode === 'manual' ? 'white' : 'transparent'"
+              [style.boxShadow]="consentMode === 'manual' ? '0 1px 3px rgba(0,0,0,0.1)' : 'none'"
+              [style.fontWeight]="consentMode === 'manual' ? '600' : '400'"
+              (click)="consentMode = 'manual'">
+              <i class="fas fa-file-signature"></i> Validation Manuelle
+            </button>
+          </div>
         </div>
 
-        <div class="consent-state flex-between" *ngIf="consentStatus === 'Signé'" style="display:flex; justify-content:space-between; align-items:center;">
-          <div>
-            <div style="color:#10b981; font-weight:600;"><i class="fas fa-check-circle"></i> Signé le : 14/10/2023</div>
+        <!-- MODE DIGITAL -->
+        <ng-container *ngIf="consentMode === 'digital' || consentStatus === 'Signé'">
+          <div class="consent-state" *ngIf="consentStatus === 'Non envoyé'">
+            <div style="color:var(--text-secondary); margin-bottom:12px;">Le formulaire de consentement n'a pas encore été transmis au patient.</div>
+            <button style="background:var(--primary); color:white; border:none; padding:8px 16px; border-radius:6px; cursor:pointer;" (click)="sendConsentDigital()" *ngIf="modalStatus === 'eligible'"><i class="fas fa-paper-plane"></i> Envoyer le consentement</button>
           </div>
-          <div style="display:flex; gap:10px;">
-            <button style="background:#f1f5f9; border:1px solid var(--border); padding:8px 12px; border-radius:6px; cursor:pointer;"><i class="fas fa-download"></i> Télécharger</button>
-            <button style="background:#fef2f2; color:#ef4444; border:1px solid #fecaca; padding:8px 12px; border-radius:6px; cursor:pointer;"><i class="fas fa-times-circle"></i> Retirer</button>
+          
+          <div class="consent-state" *ngIf="consentStatus === 'En attente'">
+            <div style="margin-bottom:12px;">Envoyé le : <strong>{{ study?.consentSentDate || 'Aujourd\'hui' }}</strong> <br/><span style="color:#f59e0b;font-size:0.9rem;">En attente de signature numérique</span></div>
+            <button style="background: #f1f5f9; border:1px solid #cbd5e1; padding:8px 16px; border-radius:6px; cursor:pointer; margin-right: 10px;" *ngIf="modalStatus === 'awaiting-consent'"><i class="fas fa-sync-alt"></i> Relancer / Renvoyer</button>
+          <button style="background: #dbeafe; color: #1e40af; border:1px solid #bfdbfe; padding:8px 16px; border-radius:6px; cursor:pointer;" (click)="simulatePatientSignature()" *ngIf="modalStatus === 'awaiting-consent'"><i class="fas fa-signature"></i> Simuler la signature patient</button>
           </div>
-        </div>
-      </div>
 
-      <!-- SECTION 5: RGPD -->
-      <div class="sm-section" style="background: #f8fafc; padding: 12px; border-radius: 8px; font-size: 0.9rem;">
-        <h4 style="margin-top:0; margin-bottom:10px; font-size: 0.95rem;">Validation éthique & RGPD</h4>
-        <label style="display:flex; align-items:flex-start; gap:8px; margin-bottom:8px; cursor:pointer;">
-          <input type="checkbox" [checked]="rgpdChecked1" (change)="rgpdChecked1 = !rgpdChecked1" style="margin-top:4px;">
-          <span>Le patient a reçu toutes les informations claires sur la nature de l'étude clinique.</span>
-        </label>
-        <label style="display:flex; align-items:flex-start; gap:8px; cursor:pointer;">
-          <input type="checkbox" [checked]="rgpdChecked2" (change)="rgpdChecked2 = !rgpdChecked2" style="margin-top:4px;">
-          <span>Le patient comprend qu'il peut suspendre sa participation à tout moment sans justification.</span>
-        </label>
+          <div class="consent-state flex-between" *ngIf="consentStatus === 'Signé'" style="display:flex; justify-content:space-between; align-items:center;">
+            <div>
+              <div style="color:#10b981; font-weight:600;"><i class="fas fa-check-circle"></i> Signé le : {{ study?.consentSignedDate || '14/10/2023' }}</div>
+            </div>
+            <div style="display:flex; gap:10px;">
+              <button style="background:#f1f5f9; border:1px solid var(--border); padding:8px 12px; border-radius:6px; cursor:pointer;"><i class="fas fa-download"></i> Télécharger</button>
+              <button style="background:#fef2f2; color:#ef4444; border:1px solid #fecaca; padding:8px 12px; border-radius:6px; cursor:pointer;"><i class="fas fa-times-circle"></i> Retirer</button>
+            </div>
+          </div>
+        </ng-container>
+
+        <!-- MODE MANUEL (RGPD) -->
+        <ng-container *ngIf="consentMode === 'manual' && consentStatus !== 'Signé'">
+          <div style="background: #f8fafc; padding: 12px; border-radius: 8px; font-size: 0.9rem; border: 1px dashed #cbd5e1;">
+            <div style="color:var(--text-secondary); margin-bottom:12px; font-size: 0.85rem;"><i class="fas fa-info-circle"></i> Ce mode permet de valider le consentement manuellement si le patient l'a donné en consultation sans le formulaire numérique.</div>
+            
+            <label style="display:flex; align-items:flex-start; gap:8px; margin-bottom:8px; cursor:pointer;">
+              <input type="checkbox" [checked]="rgpdChecked1" (change)="rgpdChecked1 = !rgpdChecked1" style="margin-top:4px;">
+              <span>Le patient a reçu toutes les informations claires sur la nature de l'étude clinique.</span>
+            </label>
+            <label style="display:flex; align-items:flex-start; gap:8px; margin-bottom: 16px; cursor:pointer;">
+              <input type="checkbox" [checked]="rgpdChecked2" (change)="rgpdChecked2 = !rgpdChecked2" style="margin-top:4px;">
+              <span>Le patient comprend qu'il peut suspendre sa participation à tout moment sans justification.</span>
+            </label>
+
+            <button 
+              style="border:none; padding:8px 16px; border-radius:6px; cursor:pointer; font-weight: 600;"
+              [style.background]="rgpdChecked1 && rgpdChecked2 ? 'var(--primary)' : '#e2e8f0'"
+              [style.color]="rgpdChecked1 && rgpdChecked2 ? 'white' : '#94a3b8'"
+              [disabled]="!rgpdChecked1 || !rgpdChecked2"
+              (click)="validateManualConsent()"
+              *ngIf="modalStatus === 'eligible'">
+              <i class="fas fa-check"></i> Valider le consentement
+            </button>
+          </div>
+        </ng-container>
       </div>
 
       <!-- SECTION 6: AVANCEMENT (Seulement si active) -->
@@ -120,8 +159,7 @@
 
     <!-- SECTION 7: ACTIONS (FOOTER) -->
     <div class="sm-footer" style="padding: 16px 24px; border-top: 1px solid var(--border); display: flex; justify-content: flex-end; gap: 12px; background: #fbfbfc;">
-      <button style="background:transparent; border:1px solid #cbd5e1; padding:10px 20px; border-radius:6px; font-weight:600; cursor:pointer;" (click)="closeModal()">Annuler</button>
-      <button style="background:var(--primary); color:white; border:none; padding:10px 24px; border-radius:6px; font-weight:600; cursor:pointer;" (click)="closeModal()">Valider & Enregistrer</button>
+      <button style="background:transparent; border:1px solid #cbd5e1; padding:10px 20px; border-radius:6px; font-weight:600; cursor:pointer;" (click)="closeModal()">Fermer</button>
     </div>
   </div>
 </div>

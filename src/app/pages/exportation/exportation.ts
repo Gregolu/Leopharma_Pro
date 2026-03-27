@@ -40,11 +40,25 @@ export interface ExportCategory {
   styleUrls: ['./exportation.scss']
 })
 export class ExportationComponent implements OnInit {
+  getVignetteClass(name: string): string {
+    const n = name.toLowerCase();
+    if (n.includes("sévère")) return "vignette-severe";
+    if (n.includes("modéré")) return "vignette-modere";
+    if (n.includes("alpha") || n.includes("trial a")) return "vignette-trial-a";
+    if (n.includes("beta")) return "vignette-beta";
+    if (n.includes("ecp-4")) return "vignette-ecp4";
+    if (n.includes("eczemalife")) return "vignette-eczemalife";
+    if (n.includes("elaris")) return "vignette-elaris";
+    if (n.includes("exogen")) return "vignette-exogen";
+    if (n.includes("aucun") || n.includes("non diagn")) return "vignette-none";
+    return "vignette-other-study";
+  }
+
   view: 'list' | 'wizard' | 'summary' = 'list';
   
   exportsList: ExportItem[] = [
     { id: '1', date: new Date(), name: 'Export Global - Patients Sévères', user: 'Dr. Martin', format: 'Excel (.xlsx)', status: 'success' },
-    { id: '2', date: new Date(Date.now() - 86400000), name: 'Analyse mensuelle Q1', user: 'Dr. Martin', format: 'CSV', status: 'error' },
+    { id: '2', date: new Date(Date.now() - 86400000), name: 'Analyse mensuelle Q1', user: 'Dr. Martin', format: 'CSV', status: 'in-progress' },
     { id: '3', date: new Date(Date.now() - 172800000), name: 'Cohorte Pédiatrique 2023', user: 'Dr. Martin', format: 'JSON', status: 'success' },
     { id: '4', date: new Date(Date.now() - 259200000), name: 'Impact traitements topiques', user: 'Dr. Martin', format: 'Excel (.xlsx)', status: 'success' }
   ];
@@ -70,23 +84,48 @@ export class ExportationComponent implements OnInit {
   // -- Etapes 2 et 3 : Profil Patient & Questionnaires --
   patientCategories: ExportCategory[] = [
     {
-      name: 'Analyse',
+      name: 'Etat de la main',
       selected: true,
       questionnaires: [
         {
-          id: 'q1', name: 'Analyse des mains', selected: true,
-          fields: [
-            { id: 'f1_1', label: 'Sévérité des lésions (Score global)', selected: true, type: 'radio', options: ['Léger', 'Modéré', 'Sévère'] },
-            { id: 'f1_2', label: 'Présence de fissures ou craquelures', selected: true, type: 'checkbox' },
-            { id: 'f1_3', label: 'Douleur ou prurit évalué (0-10)', selected: true, type: 'checkbox' }
-          ]
+          id: 'q1', name: 'Etat de santé générale de votre main', selected: true,
+          fields: [ { id: 'f1_1', label: 'Symptômes généraux', selected: true, type: 'checkbox' } ]
         },
         {
-          id: 'q2', name: 'Scan produit', selected: true,
-          fields: [
-            { id: 'f2_1', label: 'Produits émollients utilisés', selected: true, type: 'checkbox' },
-            { id: 'f2_2', label: 'Fréquence d\'application hebdomadaire', selected: true, type: 'radio', options: ['1-2 fois', '3-5 fois', 'Quotidien'] }
-          ]
+          id: 'q2', name: 'Analyse détaillée des symptômes', selected: true,
+          fields: [ { id: 'f2_1', label: 'Spécificité des symptômes', selected: true, type: 'checkbox' } ]
+        }
+      ]
+    },
+    {
+      name: 'Antécédents et traitements',
+      selected: true,
+      questionnaires: [
+        {
+          id: 'q3', name: 'Antécédents médicaux', selected: true,
+          fields: [ { id: 'f3_1', label: 'Détails médicaux', selected: true, type: 'checkbox' } ]
+        },
+        {
+          id: 'q4', name: 'Traitements', selected: true,
+          fields: [ { id: 'f4_1', label: 'Historique traitements', selected: true, type: 'checkbox' } ]
+        },
+        {
+          id: 'q5', name: 'Antécédents familiaux', selected: true,
+          fields: [ { id: 'f5_1', label: 'Détails familiaux', selected: true, type: 'checkbox' } ]
+        }
+      ]
+    },
+    {
+      name: 'Contexte de vie',
+      selected: true,
+      questionnaires: [
+        {
+          id: 'q6', name: 'Profession et cadre de vie', selected: true,
+          fields: [ { id: 'f6_1', label: 'Détails', selected: true, type: 'checkbox' } ]
+        },
+        {
+          id: 'q7', name: 'Exposition et facteurs aggravants', selected: true,
+          fields: [ { id: 'f7_1', label: 'Expositions', selected: true, type: 'checkbox' } ]
         }
       ]
     },
@@ -95,52 +134,12 @@ export class ExportationComponent implements OnInit {
       selected: true,
       questionnaires: [
         {
-          id: 'q3', name: 'Votre qualité de vie', selected: true,
-          fields: [
-            { id: 'f3_1', label: 'Impact sur la qualité du sommeil (DLQI)', selected: true, type: 'checkbox' },
-            { id: 'f3_2', label: 'Impact sur les activités professionnelles', selected: true, type: 'checkbox' },
-            { id: 'f3_3', label: 'Niveau de stress lié à la maladie', selected: true, type: 'checkbox' }
-          ]
-        }
-      ]
-    },
-    {
-      name: 'IGA-CHE',
-      selected: true,
-      questionnaires: [
-        {
-          id: 'q4', name: 'Analyse détaillée des rougeurs', selected: true,
-          fields: [
-            { id: 'f4_1', label: 'Score d\'érythème (0-4)', selected: true, type: 'checkbox' },
-            { id: 'f4_2', label: 'Étendue des plaques érythémateuses', selected: true, type: 'checkbox' }
-          ]
+          id: 'q8', name: 'Impact fonctionnel des mains', selected: true,
+          fields: [ { id: 'f8_1', label: 'Score', selected: true, type: 'checkbox' } ]
         },
         {
-          id: 'q5', name: 'Analyse détaillée peau qui pèle', selected: true,
-          fields: [
-            { id: 'f5_1', label: 'Évaluation de la desquamation', selected: true, type: 'radio', options: ['Absente', 'Légère', 'Modérée', 'Sévère'] }
-          ]
-        },
-        {
-          id: 'q6', name: 'Analyse détaillée peau épaissie', selected: true,
-          fields: [
-            { id: 'f6_1', label: 'Lichénification (Épaisseur mesurée)', selected: true, type: 'checkbox' },
-            { id: 'f6_2', label: 'Induration des fascias', selected: true, type: 'checkbox' }
-          ]
-        }
-      ]
-    },
-    {
-      name: 'État de santé',
-      selected: true,
-      questionnaires: [
-        {
-          id: 'q7', name: 'État de santé général', selected: true,
-          fields: [
-            { id: 'f7_1', label: 'Poids & Indice corporel (IMC)', selected: true, type: 'checkbox' },
-            { id: 'f7_2', label: 'Antécédents d\'asthme ou rhinite', selected: true, type: 'checkbox' },
-            { id: 'f7_3', label: 'Traitements systémiques en cours', selected: true, type: 'checkbox' }
-          ]
+          id: 'q9', name: 'Votre qualité de vie (dont stigmatisation)', selected: true,
+          fields: [ { id: 'f9_1', label: 'Score QDV', selected: true, type: 'checkbox' } ]
         }
       ]
     }
@@ -249,18 +248,15 @@ export class ExportationComponent implements OnInit {
 
   // --- Status & Vue ---
   launchExport() {
-    this.lastExportStatus = 'in-progress';
-    setTimeout(() => {
-      this.lastExportStatus = 'success';
+    this.lastExportStatus = 'success';
       this.exportsList.unshift({
         id: Date.now().toString(),
         date: new Date(),
-        name: this.exportName || `Exportation (${this.currentExportRef})`,
+        name: this.exportName || `Export (${this.currentExportRef})`,
         user: 'Dr. Martin',
         format: this.selectedFormat,
         status: 'success'
       });
-    }, 2000);
   }
 
   cancelSummary() {

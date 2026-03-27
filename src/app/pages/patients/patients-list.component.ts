@@ -1,6 +1,6 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterLink } from '@angular/router';
+import { RouterLink, ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-patients-list',
@@ -102,24 +102,39 @@ import { RouterLink } from '@angular/router';
             <tbody>
               <tr *ngFor="let p of patients">
                 <td class="font-medium text-dark identity-col">
-                  <div class="identity-info">
-                    <div class="identity-name">{{ p.nom }} {{ p.prenom }}</div>
-                    <div class="identity-detail">{{ p.email }}</div>
-                    <div class="identity-detail">{{ p.phone }}</div>
-                    <div class="identity-detail">Né(e) le : {{ p.dob }}</div>
+                  <div class="identity-info-grid">
+                    <div class="id-row">
+                      <div class="identity-name">{{ p.nom }} {{ p.prenom }}</div>
+                      <div class="identity-detail">{{ p.dob }}</div>
+                    </div>
+                    <div class="id-row">
+                      <div class="identity-detail">{{ p.email }}</div>
+                      <div class="identity-detail">{{ p.phone }}</div>
+                    </div>
                   </div>
                 </td>
                 <td class="text-gray">
-                  <div style="display: flex; align-items: center;">
-                    <div class="color-pastille" [ngClass]="{'pastille-severe': p.suivi.includes('sévère'), 'pastille-modere': p.suivi.includes('modéré'), 'pastille-beta': !p.suivi.includes('sévère') && !p.suivi.includes('modéré')}"></div>
+                  <div style="display: flex; align-items: center;" *ngIf="p.suivi">
+                    <div class="vignette-triangle" [ngClass]="getVignetteClass(p.suivi)"></div>
                     <span>{{ p.suivi }}</span>
                   </div>
+                  <div *ngIf="!p.suivi" style="text-align: center; color:#94a3b8;">-</div>
                 </td>
                 <td class="text-gray">
-                  <div style="display: flex; align-items: center;">
-                    <div class="color-pastille" [ngClass]="{'pastille-trial-a': p.etude.includes('Alpha') || p.etude.includes('Trial A'), 'pastille-beta': p.etude.includes('Beta')}"></div>
-                    <span>{{ p.etude }}</span>
-                  </div>
+                  <ng-container *ngIf="p.etudes && p.etudes.length > 0; else noEtude">
+                    <div style="display: flex; flex-direction: column; gap: 8px;">
+                      <div *ngFor="let etu of p.etudes" style="display: flex; align-items: center; justify-content: flex-start; gap: 8px;">
+                        <div style="display: flex; align-items: center;">
+                          <div class="vignette-triangle" [ngClass]="getVignetteClass(etu.name)"></div>
+                          <span>{{ etu.name }}</span>
+                        </div>
+                        <span style="color: #94a3b8; font-size: 13px;">{{ etu.duree }}</span>
+                      </div>
+                    </div>
+                  </ng-container>
+                  <ng-template #noEtude>
+                    <div style="text-align: center; color:#94a3b8;">-</div>
+                  </ng-template>
                 </td>
                 <td class="text-gray">{{ p.lastModif }}</td>
                 <td>
@@ -155,20 +170,6 @@ import { RouterLink } from '@angular/router';
     </div>
   `,
   styles: [`
-    
-.color-pastille {
-    width: 12px;
-    height: 12px;
-    border-radius: 50%;
-    display: inline-block;
-    margin-right: 8px;
-}
-.pastille-severe { background-color: #ec4899; }
-.pastille-modere { background-color: #3b82f6; }
-.pastille-trial-a { background-color: #10b981; }
-.pastille-beta { background-color: #f59e0b; }
-
-
     .global-search-area {
       background-color: #204131;
       padding: 20px 40px 40px 40px;
@@ -395,20 +396,26 @@ import { RouterLink } from '@angular/router';
     .data-table tr:hover td { background-color: #fdfdfd; }
     
     .identity-col {
-      min-width: 250px;
+      min-width: 380px;
     }
-    .identity-info {
+    .identity-info-grid {
       display: flex;
       flex-direction: column;
-      gap: 4px;
+      gap: 10px;
+    }
+    .id-row {
+      display: grid;
+      grid-template-columns: 200px 1fr;
+      align-items: center;
+      gap: 16px;
     }
     .identity-name {
       font-weight: 700;
-      font-size: 15px;
+      font-size: 14px;
       color: #1a2233;
     }
     .identity-detail {
-      font-size: 13px;
+      font-size: 14px;
       color: #6b7280;
       font-weight: 400;
     }
@@ -470,18 +477,64 @@ import { RouterLink } from '@angular/router';
     .page-btn:disabled { opacity: 0.5; cursor: not-allowed; }
   `]
 })
-export class PatientsListComponent {
+export class PatientsListComponent implements OnInit {
+  
+  constructor(private route: ActivatedRoute) {}
+
+  ngOnInit() {
+    this.route.queryParams.subscribe(params => {
+      let filtered = [...this.allPatients];
+      
+      if (params['filter'] === 'documents') {
+        filtered = filtered.filter(p => p.hasDocuments);
+      }
+      
+      if (params['etude']) {
+        const etudeSearch = params['etude'].toLowerCase();
+        filtered = filtered.filter(p => 
+          p.etudes && p.etudes.some(e => e.name.toLowerCase().includes(etudeSearch))
+        );
+      }
+      
+      // Limiter l'affichage à 5 patients maximum
+      this.patients = filtered.slice(0, 5);
+    });
+  }
+
+  getVignetteClass(name: string): string {
+    if (!name) return "vignette-none";
+    const n = name.toLowerCase();
+    if (n.includes("sévère") && !n.includes("non")) return "vignette-severe";
+    if (n.includes("modéré")) return "vignette-modere";
+    if (n.includes("alpha") || n.includes("trial a")) return "vignette-trial-a";
+    if (n.includes("beta")) return "vignette-beta";
+    if (n.includes("ecp-4")) return "vignette-ecp4";
+    if (n.includes("eczemalife")) return "vignette-eczemalife";
+    if (n.includes("elaris")) return "vignette-elaris";
+    if (n.includes("exogen")) return "vignette-exogen";
+    if (n.includes("aucun") || n.includes("non diagn")) return "vignette-none";
+    return "vignette-other-study";
+  }
   showFilters = false;
 
   toggleFilters() {
     this.showFilters = !this.showFilters;
   }
 
-  patients = [
-    { nom: 'Dupont', prenom: 'Jean', email: 'jean.dupont@email.com', dob: '12/05/1980', phone: '06 12 34 56 78', suivi: 'Eczéma sévère', etude: 'Étude Alpha', lastModif: '2026-03-15', status: 'Actif', statusClass: 'status-active' },
-    { nom: 'Martin', prenom: 'Sophie', email: 'smartin@email.com', dob: '03/11/1992', phone: '07 89 01 23 45', suivi: 'Eczéma modéré', etude: 'Étude Beta', lastModif: '2026-03-18', status: 'En attente', statusClass: 'status-waiting' },
-    { nom: 'Bernard', prenom: 'Luc', email: 'lbernard@email.com', dob: '25/08/1975', phone: '06 98 76 54 32', suivi: 'Eczéma sévère', etude: 'Étude Alpha', lastModif: '2026-03-20', status: 'Complété', statusClass: 'status-complete' },
-    { nom: 'Lefevre', prenom: 'Marie', email: 'mlefevre@email.com', dob: '14/02/1988', phone: '07 11 22 33 44', suivi: 'Eczéma non sévère', etude: 'Étude Alpha', lastModif: '2026-03-10', status: 'Actif', statusClass: 'status-active' },
-    { nom: 'Petit', prenom: 'Paul', email: 'paul.p@email.com', dob: '09/07/1965', phone: '06 55 44 33 22', suivi: 'Eczéma modéré', etude: 'Étude Beta', lastModif: '2026-02-28', status: 'Actif', statusClass: 'status-active' }
+  patients: any[] = [];
+  allPatients = [
+    { nom: 'Dupont', prenom: 'Jean', email: 'jean.dupont@email.com', dob: '12/05/1980', phone: '06 12 34 56 78', suivi: 'Eczéma sévère', etudes: [{name: 'Eczema Care Trial A', duree: '12 mois'}], lastModif: '2026-03-15', status: 'Actif', statusClass: 'status-active', hasDocuments: false },
+    { nom: 'Martin', prenom: 'Sophie', email: 'smartin@email.com', dob: '03/11/1992', phone: '07 89 01 23 45', suivi: null, etudes: [{name: 'Skin Life ECP4', duree: '12 mois'}, {name: 'Eczema Care Trial A', duree: '6 mois'}], lastModif: '2026-03-18', status: 'En attente', statusClass: 'status-waiting', hasDocuments: true },
+    { nom: 'Bernard', prenom: 'Luc', email: 'lbernard@email.com', dob: '25/08/1975', phone: '06 98 76 54 32', suivi: 'Eczéma modéré', etudes: [{name: 'DermaTest', duree: '3 mois'}], lastModif: '2026-03-20', status: 'Complété', statusClass: 'status-complete', hasDocuments: false },
+    { nom: 'Lefevre', prenom: 'Marie', email: 'mlefevre@email.com', dob: '14/02/1988', phone: '07 11 22 33 44', suivi: 'Patient non diagnostiqué', etudes: [], lastModif: '2026-03-10', status: 'Actif', statusClass: 'status-active', hasDocuments: true },
+    { nom: 'Petit', prenom: 'Paul', email: 'paul.p@email.com', dob: '09/07/1965', phone: '06 55 44 33 22', suivi: 'Eczéma sévère', etudes: [{name: 'Eczema Plus Alpha', duree: '6 mois'}, {name: 'Skin Life ECP4', duree: '12 mois'}], lastModif: '2026-02-28', status: 'Actif', statusClass: 'status-active', hasDocuments: false },
+    { nom: 'Dubois', prenom: 'Thomas', email: 't.dubois@email.com', dob: '30/01/1990', phone: '06 11 22 33 44', suivi: 'Eczéma sévère', etudes: [{name: 'Eczema Care Trial A', duree: '3 mois'}], lastModif: '2026-03-22', status: 'Actif', statusClass: 'status-active', hasDocuments: true },
+    { nom: 'Roux', prenom: 'Camille', email: 'camille.roux@email.com', dob: '17/04/1985', phone: '07 22 33 44 55', suivi: 'Eczéma modéré', etudes: [{name: 'Skin Life ECP4', duree: '6 mois'}], lastModif: '2026-03-24', status: 'En attente', statusClass: 'status-waiting', hasDocuments: true },
+    { nom: 'Moreau', prenom: 'Antoine', email: 'a.moreau@email.com', dob: '22/09/1972', phone: '06 33 44 55 66', suivi: 'Eczéma sévère', etudes: [{name: 'Eczema Care Trial A', duree: '6 mois'}, {name: 'DermaTest', duree: '12 mois'}], lastModif: '2026-03-25', status: 'Actif', statusClass: 'status-active', hasDocuments: false },
+    { nom: 'Fournier', prenom: 'Julie', email: 'j.fournier@email.com', dob: '05/12/1995', phone: '07 44 55 66 77', suivi: 'Eczéma modéré', etudes: [{name: 'Eczema Care Trial A', duree: '3 mois'}, {name: 'Skin Life ECP4', duree: '12 mois'}], lastModif: '2026-03-21', status: 'Actif', statusClass: 'status-active', hasDocuments: true },
+    { nom: 'Girard', prenom: 'Nicolas', email: 'ngirard@email.com', dob: '11/06/1982', phone: '06 55 66 77 88', suivi: 'Eczéma sévère', etudes: [{name: 'Skin Life ECP4', duree: '3 mois'}, {name: 'Elaris EM-II', duree: '6 mois'}], lastModif: '2026-03-19', status: 'Actif', statusClass: 'status-active', hasDocuments: false },
+    { nom: 'Bonnet', prenom: 'Léa', email: 'lea.b@email.com', dob: '08/03/2001', phone: '07 66 77 88 99', suivi: 'Patient non diagnostiqué', etudes: [], lastModif: '2026-03-26', status: 'En attente', statusClass: 'status-waiting', hasDocuments: true },
+    { nom: 'Robert', prenom: 'Michel', email: 'm.robert@email.com', dob: '15/10/1958', phone: '06 77 88 99 00', suivi: 'Eczéma sévère', etudes: [{name: 'Eczema Care Trial A', duree: '12 mois'}], lastModif: '2026-03-20', status: 'Complété', statusClass: 'status-complete', hasDocuments: false },
+    { nom: 'Blanc', prenom: 'Élodie', email: 'eblanc@email.com', dob: '28/02/1993', phone: '07 88 99 00 11', suivi: 'Eczéma modéré', etudes: [{name: 'Skin Life ECP4', duree: '6 mois'}], lastModif: '2026-03-23', status: 'Actif', statusClass: 'status-active', hasDocuments: true }
   ];
 }

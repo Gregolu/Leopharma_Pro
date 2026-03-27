@@ -96,16 +96,45 @@ h1, h2, h3, h4, h5, h6 {
 .w-full { width: 100%; }
 .text-center { text-align: center; }
 
-/* GLOBAL PASTILLES FOR STUDIES AND FOLLOW-UPS */
-.color-pastille {
+/* SYSTEME DE VIGNETTES TRIANGLES POUR SUIVIS / ETUDES */
+.vignette-triangle {
+    display: inline-block;
     width: 12px;
     height: 12px;
-    border-radius: 50%;
-    display: inline-block;
+    clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
     margin-right: 8px;
     flex-shrink: 0;
+    align-self: center;
 }
-.pastille-severe { background-color: #ec4899; } /* Pink */
-.pastille-modere { background-color: #3b82f6; } /* Blue */
-.pastille-trial-a { background-color: #10b981; } /* Green */
-.pastille-beta { background-color: #f59e0b; } /* Orange */
+/* Suivis Thérapeutiques */
+.vignette-modere { background-color: #10b981; } /* Vert : Eczéma modéré / léger */
+.vignette-severe { background-color: #ef4444; } /* Rouge : Eczéma sévère */
+.vignette-none { background-color: #94a3b8; } /* Gris : Aucun suivi / Non diagnostiqué */
+
+/* Etudes Cliniques */
+.vignette-trial-a { background-color: #ec4899; } /* Rose : Eczema Care Trial A / Etude Alpha */
+.vignette-alpha { background-color: #ec4899; } /* Rose : Alpha = Trial A */
+.vignette-beta { background-color: #f59e0b; } /* Orange : Etude Beta */
+.vignette-ecp4 { background-color: #8b5cf6; } /* Violet : SkinLife ECP-4 / Eczéma précoce */
+.vignette-eczemalife { background-color: #06b6d4; } /* Cyan : EczemaLife */
+.vignette-elaris { background-color: #3b82f6; } /* Bleu : Elaris EM-II / EM-1 */
+.vignette-exogen { background-color: #14b8a6; } /* Emeraude : ExoGEN trial */
+.vignette-other-study { background-color: #6366f1; } /* Indigo : Autres (EndoLife, DermaCare, etc) */
+
+.grid-row-nested {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+}
+@media (max-width: 900px) {
+    .grid-row-nested {
+        grid-template-columns: 1fr;
+    }
+}
+.chart-card .pm-chart-wrapper {
+   width: 100%;
+   height: auto;
+}
+.monitoring-container {
+   max-width: 100%;
+}

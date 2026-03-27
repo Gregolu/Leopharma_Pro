@@ -5,9 +5,9 @@
   <!-- ============================================== -->
   <ng-container *ngIf="view === 'list'">
     <div class="header-action">
-      <h1 class="page-title">Exportations</h1>
+      <h1 class="page-title">Exports</h1>
       <button class="btn btn-primary" (click)="startNewExport()">
-        Nouvelle exportation
+        Nouvel export
       </button>
     </div>
 
@@ -15,7 +15,7 @@
       <table class="data-table">
         <thead>
           <tr>
-            <th>Date d'exportation</th>
+            <th>Date d'export</th>
             <th>Nom de l'export</th>
             <th>Utilisateur</th>
             <th>Format</th>
@@ -42,7 +42,7 @@
             </td>
           </tr>
           <tr *ngIf="exportsList.length === 0">
-             <td colspan="6" class="text-center text-muted py-4">Aucune exportation trouvée.</td>
+             <td colspan="6" class="text-center text-muted py-4">Aucun export trouvé.</td>
           </tr>
         </tbody>
       </table>
@@ -61,7 +61,7 @@
           <i class="fas fa-chevron-left"></i> Retour
         </button>
         <h2 class="wizard-main-title count-anim">
-          Exportation ({{ dynamicCount | number }})
+          Export ({{ dynamicCount | number }})
         </h2>
         <div class="next-action-top">
           <!-- Ce bouton est masqué à l'étape 4, on le place dans le bloc blanc -->
@@ -118,6 +118,7 @@
                *ngFor="let study of studies" 
                [class.active]="selectedStudy === study.id"
                (click)="selectStudy(study.id)">
+            <div class="vignette-triangle" [ngClass]="getVignetteClass(study.name)"></div>
             {{ study.name }}
           </div>
         </div>
@@ -254,39 +255,62 @@
 
       <!-- ÉTAPE 5 : Résumé -->
       <div class="step-panel step5-centered" *ngIf="currentStep === 5">
-        <div class="panel-header text-center">
-          <h3 class="panel-subtitle">Récapitulatif de l'exportation</h3>
-          <p class="panel-desc">Vérifiez vos paramètres avant de lancer la génération du fichier.</p>
+        <div class="panel-header text-center completed-export-header">
+          <div class="header-icon-success">
+            <i class="fas fa-check"></i>
+          </div>
+          <h3 class="panel-title-large">Paramètres d'export complétés</h3>
         </div>
 
-        <div class="summary-grid-box">
-          <div class="detail-item">
-            <div class="detail-icon"><i class="fas fa-microscope"></i></div>
-            <div class="detail-texts">
-              <span class="detail-label">Études & Cohorte</span>
-              <span class="detail-value">{{ getStudyName(selectedStudy) || 'Aucune (Base globale)' }}</span>
+        <div class="recap-columns-layout">
+          <!-- Col 1 -->
+          <div class="r-col">
+            <span class="r-label">Étude clinique</span>
+            <span class="r-value">{{ getStudyName(selectedStudy) || 'Aucune (Base globale)' }}</span>
+          </div>
+
+          <div class="r-divider"></div>
+
+          <!-- Col 2 -->
+          <div class="r-col">
+            <span class="r-label">Questionnaires sélectionnés</span>
+            <span class="r-value">{{ SelectedQuestionnairesCount }} questionnaires actifs</span>
+          </div>
+
+          <div class="r-divider"></div>
+
+          <!-- Col 3 -->
+          <div class="r-col">
+            <span class="r-label">Volume de données</span>
+            <div class="r-value stack-info">
+              <strong>{{ dynamicCount | number }}</strong>
+              <span class="light-text">entrées estimées</span>
             </div>
           </div>
-          <div class="detail-item">
-            <div class="detail-icon"><i class="fas fa-file-medical"></i></div>
-            <div class="detail-texts">
-              <span class="detail-label">Questionnaires actifs</span>
-              <span class="detail-value">{{ SelectedQuestionnairesCount }} questionnaires</span>
+
+          <div class="r-divider"></div>
+
+          <!-- Col 4 -->
+          <div class="r-col r-col-stack">
+            <div class="str-row">
+              <span class="r-label">Nom de l'exportation</span>
+              <span class="r-value">{{ exportName || 'Export global' }}</span>
             </div>
+            <div class="str-row">
+              <span class="r-label">Format sélectionné</span>
+              <span class="r-value">{{ selectedFormat }}</span>
+            </div>
+            
           </div>
-          <div class="detail-item">
-            <div class="detail-icon"><i class="fas fa-users"></i></div>
-            <div class="detail-texts">
-              <span class="detail-label">Volume de données</span>
-              <span class="detail-value">{{ dynamicCount | number }} entrées</span>
-            </div>
-          </div>
-          <div class="detail-item">
-            <div class="detail-icon"><i class="fas fa-file-export"></i></div>
-            <div class="detail-texts">
-              <span class="detail-label">Format sélectionné</span>
-              <span class="detail-value">{{ selectedFormat }}</span>
-            </div>
+
+          <div class="r-divider"></div>
+
+          <!-- Col 5 -->
+          <div class="r-col">
+            <span class="r-label">Statut de l'export</span>
+            <span class="r-value status-light">
+              {{ lastExportStatus === 'success' ? 'Généré' : (lastExportStatus === 'in-progress' ? 'En cours' : 'Prêt à générer') }}
+            </span>
           </div>
         </div>
 
@@ -296,27 +320,34 @@
                 <i class="fas fa-circle-notch fa-spin"></i> Construction du fichier en cours...
             </div>
             <div *ngIf="lastExportStatus === 'success'" class="status-alert success-alert">
-                <i class="fas fa-check-circle"></i> Exportation générée avec succès (Réf: {{ currentExportRef }})
+                <i class="fas fa-check-circle"></i> Export généré avec succès
             </div>
         </div>
 
         <!-- Boutons d'actions -->
-        <div class="action-submit-block">
-            <ng-container *ngIf="lastExportStatus === 'pending' || lastExportStatus === 'in-progress'">
-               <button class="btn btn-primary btn-xl submit-btn" (click)="launchExport()" [disabled]="lastExportStatus === 'in-progress'">
-                 <i class="fas fa-rocket"></i> Confirmer et Lancer l'export
-               </button>
-               <div style="margin-top: 1rem;">
-                 <button class="btn btn-text-nav" (click)="currentStep = 4" [disabled]="lastExportStatus === 'in-progress'">Modifier les paramètres</button>
+        <div class="action-submit-block recap-actions-row">
+            <ng-container *ngIf="lastExportStatus !== 'success'">
+               <div class="actions-flex">
+                 <button class="btn btn-outline edit-btn" (click)="currentStep = 4" [disabled]="lastExportStatus === 'in-progress'">
+                   Modifier
+                 </button>
+                 <button class="btn btn-primary start-export-btn" (click)="launchExport()" [disabled]="lastExportStatus === 'in-progress'">
+                   Lancer l'export
+                 </button>
+               </div>
+               <div class="delete-link-wrapper mt-3">
+                 <a href="javascript:void(0)" class="link-delete" (click)="cancelSummary()">Annuler cet export</a>
                </div>
             </ng-container>
 
             <ng-container *ngIf="lastExportStatus === 'success'">
-               <button class="btn btn-success btn-xl submit-btn success-btn" (click)="downloadLastExport()">
-                 <i class="fas fa-download"></i> Télécharger {{ exportName || 'le fichier' }}
-               </button>
-               <div style="margin-top: 1rem;">
-                 <button class="btn btn-text-nav" (click)="view = 'list'">Retourner à la liste</button>
+               <div class="actions-flex">
+                 <button class="btn btn-primary start-export-btn" (click)="downloadLastExport()">
+                   <i class="fas fa-download"></i> Télécharger le fichier
+                 </button>
+               </div>
+               <div class="delete-link-wrapper mt-3">
+                 <a href="javascript:void(0)" class="link-delete" (click)="cancelSummary()">Retourner à la liste</a>
                </div>
             </ng-container>
         </div>

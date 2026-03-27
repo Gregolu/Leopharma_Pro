@@ -94,7 +94,7 @@ import { InviteModalComponent } from '../../shared/components/invite-modal/invit
               <div class="stat-value primary-color">1350</div>
               <div class="stat-bottom">
                 <div class="stat-subtext">Patients dans ma<br>base de données</div>
-                <button class="btn-sm bg-primary">Voir</button>
+                <button class="btn-sm bg-primary" routerLink="/patients">Voir</button>
               </div>
             </div>
 
@@ -109,41 +109,47 @@ import { InviteModalComponent } from '../../shared/components/invite-modal/invit
               <div class="stat-value warning-color">12</div>
               <div class="stat-bottom">
                 <div class="stat-subtext">Nouveaux documents<br>récemment reçus</div>
-                <button class="btn-sm bg-warning">Voir</button>
+                <button class="btn-sm bg-warning" [routerLink]="['/patients']" [queryParams]="{ filter: 'documents' }">Voir</button>
               </div>
             </div>
 
             <!-- Carte 3 : Enrolment 1 -->
             <div class="stat-card">
-              <div class="stat-top">
-                <div class="stat-title link-color">▶ Suivi thérapeutique</div>
-                <div class="stat-icon link-color">
-                   <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+              <div class="stat-top" style="margin-bottom:12px;">
+                <div class="stat-title" style="display:flex; align-items:center; gap:8px; color: var(--text-primary);">
+                  <div class="vignette-triangle vignette-trial-a" style="margin-right:0;"></div>
+                  <span style="font-weight:700;">Eczema Care Trial A</span>
+                </div>
+                <div class="stat-icon" style="color: var(--text-secondary);">
+                  <i class="fas fa-vial"></i>
                 </div>
               </div>
-              <div class="stat-bottom-inline">
-                <div class="stat-subtext link-color formated-sub">Suivi actif<br>des patients</div>
-                <div class="stat-value-sm link-color">352</div>
+              <div class="stat-bottom-inline" style="border-top:1px solid var(--border); padding-top:12px; margin-bottom:16px;">
+                <div class="stat-subtext formated-sub" style="color:var(--text-secondary);">Patients inclus<br>dans l'étude</div>
+                <div class="stat-value-sm" style="color:#ec4899;">352</div>
               </div>
               <div class="bottom-center-btn">
-                <button class="btn-full bg-link">Voir</button>
+                <button class="btn-full" style="background:#ec4899; color:white;" [routerLink]="['/patients']" [queryParams]="{ etude: 'Eczema Care Trial A' }">Voir</button>
               </div>
             </div>
 
             <!-- Carte 4 : Enrolment 2 -->
             <div class="stat-card">
-              <div class="stat-top">
-                <div class="stat-title purple-color">▶ Études cliniques</div>
-                <div class="stat-icon purple-color">
-                   <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+              <div class="stat-top" style="margin-bottom:12px;">
+                <div class="stat-title" style="display:flex; align-items:center; gap:8px; color: var(--text-primary);">
+                  <div class="vignette-triangle vignette-ecp4" style="margin-right:0;"></div>
+                  <span style="font-weight:700;">Skin Life ECP4</span>
+                </div>
+                <div class="stat-icon" style="color: var(--text-secondary);">
+                  <i class="fas fa-vial"></i>
                 </div>
               </div>
-              <div class="stat-bottom-inline">
-                <div class="stat-subtext purple-color formated-sub">Patients inclus<br>dans les études</div>
-                <div class="stat-value-sm purple-color">271</div>
+              <div class="stat-bottom-inline" style="border-top:1px solid var(--border); padding-top:12px; margin-bottom:16px;">
+                <div class="stat-subtext formated-sub" style="color:var(--text-secondary);">Patients inclus<br>dans l'étude</div>
+                <div class="stat-value-sm" style="color:#8b5cf6;">271</div>
               </div>
               <div class="bottom-center-btn">
-                <button class="btn-full bg-purple">Voir</button>
+                <button class="btn-full" style="background:#8b5cf6; color:white;" [routerLink]="['/patients']" [queryParams]="{ etude: 'Skin Life ECP4' }">Voir</button>
               </div>
             </div>
 
@@ -155,17 +161,6 @@ import { InviteModalComponent } from '../../shared/components/invite-modal/invit
     <app-invite-modal [isOpen]="isInviteModalOpen" (close)="closeInviteModal()"></app-invite-modal>
   `,
   styles: [`
-.color-pastille {
-    width: 12px;
-    height: 12px;
-    border-radius: 50%;
-    display: inline-block;
-    margin-right: 8px;
-}
-.pastille-severe { background-color: #ec4899; }
-.pastille-modere { background-color: #3b82f6; }
-.pastille-trial-a { background-color: #10b981; }
-.pastille-beta { background-color: #f59e0b; }
 
     /* Structure Top Search */
     .global-search-area {

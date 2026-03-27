@@ -389,11 +389,14 @@ export class AnalyseComponent {
   ];
 
   completionStats = [
-    { label: 'Analyse des mains', value: 92 },
-    { label: 'État de santé général', value: 85 },
-    { label: 'Votre qualité de vie', value: 68 },
-    { label: 'IGA', value: 95 },
-    { label: 'Scan produit', value: 45 },
-    { label: 'Traitement', value: 88 }
+    { label: 'Etat de santé de la main', value: 92 },
+    { label: 'Analyse des symptômes', value: 85 },
+    { label: 'Antécédents médicaux', value: 95 },
+    { label: 'Traitements', value: 88 },
+    { label: 'Antécédents familiaux', value: 75 },
+    { label: 'Profession et cadre de vie', value: 90 },
+    { label: 'Facteurs aggravants', value: 82 },
+    { label: 'Impact fonctionnel', value: 68 },
+    { label: 'Votre qualité de vie', value: 72 }
   ];
 }

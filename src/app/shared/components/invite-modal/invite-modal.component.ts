@@ -40,9 +40,9 @@ export class InviteModalComponent {
   ];
 
   studies = [
-    { id: 'trial_a', name: 'EczemaCare Trial A', pastille: 'pastille-trial-a' },
-    { id: 'trial_b', name: 'EczemaCare Trial B', pastille: 'pastille-beta' },
-    { id: 'trial_c', name: 'DermaTop Topical Study', pastille: 'pastille-modere' }
+    { id: 'trial_a', name: 'EczemaCare Trial A', pastille: 'vignette-trial-a' },
+    { id: 'trial_b', name: 'EczemaCare Trial B', pastille: 'vignette-beta' },
+    { id: 'trial_c', name: 'DermaTop Topical Study', pastille: 'vignette-modere' }
   ];
 
   closeModal() {

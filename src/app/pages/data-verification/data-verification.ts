@@ -143,6 +143,8 @@ import { RouterLink } from '@angular/router';
       cursor: pointer;
       box-shadow: 0 4px 6px rgba(0,0,0,0.05);
       transition: background-color 0.2s;
+      position: relative;
+      z-index: 10;
     }
 
     .btn-search:hover {
@@ -297,7 +299,7 @@ export class DataVerificationComponent {
     { id: 'BRD001', category: 'Donnée manquante', questionnaire: 'Questionnaire douleurs', result: 'Chirurgie 13/12/2023', status: 'Ouvert', reviewedBy: 'Angèle Lacroix', reviewedOn: '05/05/2025' },
     { id: 'BRD001', category: 'Donnée incohérente', questionnaire: 'Douleur dermatologique', result: 'Numéro de téléphone manquant', status: 'Ouvert', reviewedBy: 'Robert Dawson', reviewedOn: '27/04/2025' },
     { id: 'BRD001', category: 'Donnée manquante', questionnaire: 'Douleurs articulaires', result: 'Numéro de téléphone manquant', status: 'Ouvert', reviewedBy: '', reviewedOn: '' },
-    { id: 'BRD001', category: 'Donnée manquante', questionnaire: 'Douleurs personnelles', result: 'Numéro de téléphone manquant', status: 'Ouvert', reviewedBy: '', reviewedOn: '' },
+    { id: 'BRD001', category: 'Donnée manquante', questionnaire: 'Analyse des mains', result: 'Numéro de téléphone manquant', status: 'Ouvert', reviewedBy: '', reviewedOn: '' },
     { id: 'BRD001', category: 'Donnée manquante', questionnaire: 'Douleur dermatologique', result: 'Numéro de téléphone manquant', status: 'Ouvert', reviewedBy: 'Angèle Lacroix', reviewedOn: '04/04/2025' },
     { id: 'BRD001', category: 'Donnée manquante', questionnaire: 'Douleurs articulaires', result: 'Numéro de téléphone manquant', status: 'Ouvert', reviewedBy: 'Robert Dawson', reviewedOn: '23/03/2025' },
     { id: 'BRD001', category: 'Donnée manquante', questionnaire: 'Douleur dermatologique', result: 'Numéro de téléphone manquant', status: 'Ouvert', reviewedBy: 'Angèle Lacroix', reviewedOn: '10/03/2025' }
