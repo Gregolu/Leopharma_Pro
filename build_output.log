@@ -5,29 +5,29 @@
 ❯ Building...
 ✔ Building...
 Initial chunk files | Names                    |  Raw size | Estimated transfer size
-chunk-QGUOLTPC.js   | -                        | 171.95 kB |                49.68 kB
-chunk-AZKJVEUO.js   | -                        |  87.41 kB |                22.13 kB
-styles-YILZVTL2.css | styles                   |  22.80 kB |                 1.79 kB
-main-RNBLRJAN.js    | main                     |   1.75 kB |               582 bytes
+chunk-NWGXK4SN.js   | -                        | 172.47 kB |                49.76 kB
+chunk-PIMUIKSC.js   | -                        |  87.41 kB |                22.09 kB
+styles-B4B4IHJM.css | styles                   |  23.35 kB |                 1.98 kB
+main-UTPV3DC3.js    | main                     |   1.75 kB |               578 bytes
 
-                    | Initial total            | 283.91 kB |                74.18 kB
+                    | Initial total            | 284.99 kB |                74.41 kB
 
 Lazy chunk files    | Names                    |  Raw size | Estimated transfer size
-chunk-2433WOBL.js   | patient-detail-component | 152.87 kB |                23.53 kB
-chunk-DQGRYUSI.js   | settings                 |  43.69 kB |                 4.86 kB
-chunk-75YQBQFH.js   | reseau                   |  43.61 kB |                 6.07 kB
-chunk-ZQFFK2DA.js   | profile                  |  41.45 kB |                 5.20 kB
-chunk-DUZNHPHL.js   | exportation              |  34.99 kB |                 7.78 kB
-chunk-ZWYSI4UQ.js   | -                        |  29.35 kB |                 6.34 kB
-chunk-RQOWXR7H.js   | patients-list-component  |  12.88 kB |                 3.59 kB
-chunk-O5IGXYBX.js   | dashboard-component      |  12.34 kB |                 3.34 kB
-chunk-6CIDHP3D.js   | analyse                  |   9.35 kB |                 2.81 kB
-chunk-QEG4XW2W.js   | data-verification        |   8.66 kB |                 2.17 kB
-chunk-SVSOESQP.js   | main-layout-component    |   8.16 kB |                 2.32 kB
-chunk-MKAUL42P.js   | register                 |   4.28 kB |                 1.46 kB
-chunk-ALCN4W5J.js   | login-component          |   4.24 kB |                 1.40 kB
+chunk-7ZBKV6CM.js   | patient-detail-component | 154.86 kB |                24.18 kB
+chunk-7E4BOIB4.js   | reseau                   |  45.45 kB |                 6.42 kB
+chunk-QPNOXWEY.js   | settings                 |  44.46 kB |                 5.02 kB
+chunk-GMKTRN34.js   | profile                  |  42.23 kB |                 5.38 kB
+chunk-ZUFH6LVF.js   | exportation              |  38.10 kB |                 8.07 kB
+chunk-VAJUT634.js   | -                        |  26.72 kB |                 5.95 kB
+chunk-CJFJG663.js   | dashboard-component      |  24.40 kB |                 5.85 kB
+chunk-ELHZVLPD.js   | patients-list-component  |  16.78 kB |                 4.45 kB
+chunk-RKTZSHGA.js   | main-layout-component    |   9.62 kB |                 2.63 kB
+chunk-UBDA6PQN.js   | analyse                  |   9.52 kB |                 2.86 kB
+chunk-ZTVNTCWJ.js   | data-verification        |   8.68 kB |                 2.19 kB
+chunk-B3VGJT56.js   | register                 |   4.28 kB |                 1.45 kB
+chunk-ZNAMZIOB.js   | login-component          |   4.22 kB |                 1.39 kB
 
-Application bundle generation complete. [3.864 seconds] - 2026-03-24T12:48:30.883Z
+Application bundle generation complete. [4.838 seconds] - 2026-03-27T13:04:53.377Z
 
 [33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1m2 repetitive deprecation warnings omitted.
 Run in verbose mode to see all warnings.[0m [1m[35m[plugin angular-sass][0m
@@ -149,8 +149,8 @@ Run in verbose mode to see all warnings.[0m [1m[35m[plugin angular-sass][0m
 
 [33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mDeprecation[0m [1m[35m[plugin angular-sass][0m
 
-    src/app/pages/exportation/exportation.scss:240:61:
-[37m      240 │ ...background: rgba($success, 0.15); color: [32m[37mdarken($success, 10%); }
+    src/app/pages/exportation/exportation.scss:382:61:
+[37m      382 │ ...background: rgba($success, 0.15); color: [32m[37mdarken($success, 10%); }
           ╵                                             [32m^[0m
 
 
@@ -162,8 +162,8 @@ Run in verbose mode to see all warnings.[0m [1m[35m[plugin angular-sass][0m
 
 [33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mDeprecation[0m [1m[35m[plugin angular-sass][0m
 
-    src/app/pages/exportation/exportation.scss:240:61:
-[37m      240 │ ...background: rgba($success, 0.15); color: [32m[37mdarken($success, 10%); }
+    src/app/pages/exportation/exportation.scss:382:61:
+[37m      382 │ ...background: rgba($success, 0.15); color: [32m[37mdarken($success, 10%); }
           ╵                                             [32m^[0m
 
 
@@ -289,8 +289,8 @@ Run in verbose mode to see all warnings.[0m [1m[35m[plugin angular-sass][0m
 
 [33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mDeprecation[0m [1m[35m[plugin angular-sass][0m
 
-    src/app/pages/patients/patient-detail/patient-detail.component.scss:541:32:
-[37m      541 │           &:hover { background: [32m[37mdarken($primary, 5%); }
+    src/app/pages/patients/patient-detail/patient-detail.component.scss:585:32:
+[37m      585 │           &:hover { background: [32m[37mdarken($primary, 5%); }
           ╵                                 [32m^[0m
 
 
@@ -302,8 +302,8 @@ Run in verbose mode to see all warnings.[0m [1m[35m[plugin angular-sass][0m
 
 [33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mDeprecation[0m [1m[35m[plugin angular-sass][0m
 
-    src/app/pages/patients/patient-detail/patient-detail.component.scss:541:32:
-[37m      541 │           &:hover { background: [32m[37mdarken($primary, 5%); }
+    src/app/pages/patients/patient-detail/patient-detail.component.scss:585:32:
+[37m      585 │           &:hover { background: [32m[37mdarken($primary, 5%); }
           ╵                                 [32m^[0m
 
 

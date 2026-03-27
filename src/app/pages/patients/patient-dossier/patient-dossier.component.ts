@@ -161,13 +161,15 @@ export class PatientDossierComponent implements OnInit {
 
   selectOption(q: any, opt: string) {
     if (!this.isEditMode) return;
-    if (q.originalValue === undefined) q.originalValue = q.value;
     q.value = opt;
-    q.modified = q.value !== q.originalValue;
-    if (q.modified) {
-      q.modifiedBy = 'Dr. Médecin';
-      q.modifiedAt = new Date().toLocaleDateString('fr-FR');
+    this.markModified(q);
+  }
+
+  isOptionSelected(q: any, optLabel: string): boolean {
+    if (Array.isArray(q.value)) {
+      return q.value.includes(optLabel);
     }
+    return q.value === optLabel;
   }
 
   showHistoryModal = false;
@@ -188,8 +190,54 @@ export class PatientDossierComponent implements OnInit {
   }
 
   undoChange(q: any) {
-    q.value = q.originalValue;
+    q.value = Array.isArray(q.originalValue) ? [...q.originalValue] : q.originalValue;
     q.modified = false;
   }
 
+  markModified(q: any) {
+    if (q.value !== q.originalValue) {
+      q.modified = true;
+      q.modifiedBy = 'Moi même (Connecté)';
+      q.modifiedAt = new Date().toLocaleDateString('fr-FR');
+    } else {
+      q.modified = false;
+    }
+  }
+
+  // ==== DONNÉES SPÉCIFIQUES POUR "État de santé général de votre main" ====
+  q1Data: any = {
+    q1: null,
+    q2_locations: [],
+    q2_main: null,
+    q3: null,
+    q4: null,
+    q5: null,
+    q6_date: '',
+    q7_stepper: 0,
+    q8: null,
+    q9: null,
+    q10: null,
+    q11: []
+  };
+
+  setQ1Data(field: string, value: any) {
+    if (!this.isEditMode) return;
+    this.q1Data[field] = value;
+  }
+
+  toggleQ1Multi(field: string, value: string) {
+    if (!this.isEditMode) return;
+    const arr = this.q1Data[field];
+    const idx = arr.indexOf(value);
+    if (idx > -1) arr.splice(idx, 1);
+    else arr.push(value);
+  }
+
+  changeStepper(delta: number) {
+    if (!this.isEditMode) return;
+    let n = this.q1Data.q7_stepper + delta;
+    if (n < 0) n = 0;
+    this.q1Data.q7_stepper = n;
+  }
 }
+
